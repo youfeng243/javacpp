@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.tools.Generator;
 
 /**
@@ -22,10 +23,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * potential work with this annotation. For getters with a return value, all
  * arguments are considered as indices to access a value array.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface ValueGetter { }
+public @interface ValueGetter {
+}

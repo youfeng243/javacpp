@@ -37,7 +37,7 @@ public interface Indexable {
      * Eventually, {@link Indexer#release()} should be called to have changes
      * reflected in the underlying data.
      *
-     * @param <I> the type of the returned object
+     * @param <I>    the type of the returned object
      * @param direct a hint for the implementation, leaving the choice up to the user, since
      *               buffers are slower than arrays on Android, but not with OpenJDK, for example
      * @return a concrete {@link Indexer}

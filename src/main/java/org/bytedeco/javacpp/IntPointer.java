@@ -41,16 +41,18 @@ public class IntPointer extends Pointer {
         this(s.length() + 1);
         putString(s);
     }
+
     /**
      * Allocates enough memory for the array and copies it.
      *
      * @param array the array to copy
      * @see #put(int[])
      */
-    public IntPointer(int ... array) {
+    public IntPointer(int... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -68,6 +70,7 @@ public class IntPointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code int} array of the given size.
      *
@@ -80,29 +83,52 @@ public class IntPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public IntPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public IntPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public IntPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public IntPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public IntPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public IntPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public IntPointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public IntPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public IntPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public IntPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** Returns the code points, assuming a null-terminated string if {@code limit <= position}. */
+    /**
+     * Returns the code points, assuming a null-terminated string if {@code limit <= position}.
+     */
     public int[] getStringCodePoints() {
         if (limit > position) {
-            int[] array = new int[(int)Math.min(limit - position, Integer.MAX_VALUE)];
+            int[] array = new int[(int) Math.min(limit - position, Integer.MAX_VALUE)];
             get(array);
             return array;
         }
@@ -113,7 +139,7 @@ public class IntPointer extends Pointer {
         while ((buffer[i] = get(i)) != 0) {
             i++;
             if (i >= buffer.length) {
-                int[] newbuffer = new int[2*buffer.length];
+                int[] newbuffer = new int[2 * buffer.length];
                 System.arraycopy(buffer, 0, newbuffer, 0, buffer.length);
                 buffer = newbuffer;
             }
@@ -122,11 +148,15 @@ public class IntPointer extends Pointer {
         System.arraycopy(buffer, 0, newbuffer, 0, i);
         return newbuffer;
     }
-    /** Returns the String, assuming a null-terminated string if {@code limit <= position}. */
+
+    /**
+     * Returns the String, assuming a null-terminated string if {@code limit <= position}.
+     */
     public String getString() {
         int[] codePoints = getStringCodePoints();
         return new String(codePoints, 0, codePoints.length);
     }
+
     /**
      * Copies the String code points into native memory, including a terminating null int.
      * Sets the limit to just before the terminating null code point.
@@ -141,15 +171,28 @@ public class IntPointer extends Pointer {
         for (int i = 0; i < codePoints.length; i++) {
             codePoints[i] = s.codePointAt(i);
         }
-        return put(codePoints).put(codePoints.length, (int)0).limit(codePoints.length);
+        return put(codePoints).put(codePoints.length, (int) 0).limit(codePoints.length);
     }
 
-    /** @return {@code get(0)} */
-    public int get() { return get(0); }
-    /** @return the i-th {@code int} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public int get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code int} value of a native array
+     */
     public native int get(long i);
-    /** @return {@code put(0, j)} */
-    public IntPointer put(int j) { return put(0, j); }
+
+    /**
+     * @return {@code put(0, j)}
+     */
+    public IntPointer put(int j) {
+        return put(0, j);
+    }
+
     /**
      * Copies the {@code int} value to the i-th element of a native array.
      *
@@ -159,31 +202,45 @@ public class IntPointer extends Pointer {
      */
     public native IntPointer put(long i, int j);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public IntPointer get(int[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public IntPointer put(int ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public IntPointer get(int[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public IntPointer put(int... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native IntPointer get(int[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native IntPointer put(int[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asIntBuffer()} */
-    @Override public final IntBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asIntBuffer()}
+     */
+    @Override
+    public final IntBuffer asBuffer() {
         return asByteBuffer().asIntBuffer();
     }
 }

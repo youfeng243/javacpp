@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Samuel Audet
  */
 class Context {
     Context() {
         usingList = new ArrayList<String>();
-        namespaceMap = new HashMap<String,String>();
+        namespaceMap = new HashMap<String, String>();
     }
+
     Context(Context c) {
         namespace = c.namespace;
         cppName = c.cppName;
@@ -57,9 +57,11 @@ class Context {
     InfoMap infoMap = null;
     TemplateMap templateMap = null;
     List<String> usingList = null;
-    Map<String,String> namespaceMap = null;
+    Map<String, String> namespaceMap = null;
 
-    /** Return all likely combinations of namespaces and template arguments for this C++ type */
+    /**
+     * Return all likely combinations of namespaces and template arguments for this C++ type
+     */
     String[] qualify(String cppName) {
         if (cppName == null || cppName.length() == 0) {
             return new String[0];
@@ -69,7 +71,7 @@ class Context {
         }
         if (cppName.startsWith("::")) {
             // already in global namespace, so strip leading operator
-            return new String[] { cppName.substring(2) };
+            return new String[]{cppName.substring(2)};
         }
         List<String> names = new ArrayList<String>();
         String ns = namespace != null ? namespace : "";
@@ -106,7 +108,9 @@ class Context {
         return names.toArray(new String[names.size()]);
     }
 
-    /** Shorten a qualified Java name, given the Context */
+    /**
+     * Shorten a qualified Java name, given the Context
+     */
     String shorten(String javaName) {
         if (this.javaName != null) {
             int lastDot = 0;

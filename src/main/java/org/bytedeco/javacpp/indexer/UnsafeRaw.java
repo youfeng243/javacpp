@@ -22,6 +22,7 @@
 package org.bytedeco.javacpp.indexer;
 
 import java.lang.reflect.Field;
+
 import sun.misc.Unsafe;
 
 /**
@@ -32,6 +33,7 @@ import sun.misc.Unsafe;
 class UnsafeRaw extends Raw {
 
     protected static final Unsafe UNSAFE;
+
     static {
         Unsafe o;
         try {
@@ -45,7 +47,7 @@ class UnsafeRaw extends Raw {
             c.getDeclaredMethod("getDouble", long.class);
             c.getDeclaredMethod("getChar", long.class);
             f.setAccessible(true);
-            o = (Unsafe)f.get(null);
+            o = (Unsafe) f.get(null);
         } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException
                 | NoSuchFieldException | NoSuchMethodException | SecurityException ex) {
             o = null;
@@ -53,20 +55,77 @@ class UnsafeRaw extends Raw {
         UNSAFE = o;
     }
 
-    static boolean isAvailable() { return UNSAFE != null; }
+    static boolean isAvailable() {
+        return UNSAFE != null;
+    }
 
-    @Override byte getByte(long address) { return UNSAFE.getByte(address); }
-    @Override void putByte(long address, byte b) { UNSAFE.putByte(address, b); }
-    @Override short getShort(long address) { return UNSAFE.getShort(address); }
-    @Override void putShort(long address, short s) { UNSAFE.putShort(address, s); }
-    @Override int getInt(long address) { return UNSAFE.getInt(address); }
-    @Override void putInt(long address, int i) { UNSAFE.putInt(address, i); }
-    @Override long getLong(long address) { return UNSAFE.getLong(address); }
-    @Override void putLong(long address, long l) { UNSAFE.putLong(address, l); }
-    @Override float getFloat(long address) { return UNSAFE.getFloat(address); }
-    @Override void putFloat(long address, float f) { UNSAFE.putFloat(address, f); }
-    @Override double getDouble(long address) { return UNSAFE.getDouble(address); }
-    @Override void putDouble(long address, double d) { UNSAFE.putDouble(address, d); }
-    @Override char getChar(long address) { return UNSAFE.getChar(address); }
-    @Override void putChar(long address, char c) { UNSAFE.putChar(address, c); }
+    @Override
+    byte getByte(long address) {
+        return UNSAFE.getByte(address);
+    }
+
+    @Override
+    void putByte(long address, byte b) {
+        UNSAFE.putByte(address, b);
+    }
+
+    @Override
+    short getShort(long address) {
+        return UNSAFE.getShort(address);
+    }
+
+    @Override
+    void putShort(long address, short s) {
+        UNSAFE.putShort(address, s);
+    }
+
+    @Override
+    int getInt(long address) {
+        return UNSAFE.getInt(address);
+    }
+
+    @Override
+    void putInt(long address, int i) {
+        UNSAFE.putInt(address, i);
+    }
+
+    @Override
+    long getLong(long address) {
+        return UNSAFE.getLong(address);
+    }
+
+    @Override
+    void putLong(long address, long l) {
+        UNSAFE.putLong(address, l);
+    }
+
+    @Override
+    float getFloat(long address) {
+        return UNSAFE.getFloat(address);
+    }
+
+    @Override
+    void putFloat(long address, float f) {
+        UNSAFE.putFloat(address, f);
+    }
+
+    @Override
+    double getDouble(long address) {
+        return UNSAFE.getDouble(address);
+    }
+
+    @Override
+    void putDouble(long address, double d) {
+        UNSAFE.putDouble(address, d);
+    }
+
+    @Override
+    char getChar(long address) {
+        return UNSAFE.getChar(address);
+    }
+
+    @Override
+    void putChar(long address, char c) {
+        UNSAFE.putChar(address, c);
+    }
 }

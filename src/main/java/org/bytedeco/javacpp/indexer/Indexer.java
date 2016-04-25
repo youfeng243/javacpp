@@ -23,6 +23,7 @@
 package org.bytedeco.javacpp.indexer;
 
 import java.nio.Buffer;
+
 import org.bytedeco.javacpp.Pointer;
 
 /**
@@ -38,14 +39,16 @@ import org.bytedeco.javacpp.Pointer;
  * such as Android. When {@code direct == true}, the raw memory interface (supporting
  * long indexing) is used if available, and if not a buffer-backed indexer is returned.
  *
- * @see Raw
- *
  * @author Samuel Audet
+ * @see Raw
  */
 public abstract class Indexer implements AutoCloseable {
 
-    /** Calls {@link #release()}. */
-    @Override public void close() throws Exception {
+    /**
+     * Calls {@link #release()}.
+     */
+    @Override
+    public void close() throws Exception {
         release();
     }
 
@@ -60,28 +63,62 @@ public abstract class Indexer implements AutoCloseable {
      */
     protected long[] strides;
 
-    /** Constructor to set the {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #sizes} and {@link #strides}.
+     */
     protected Indexer(long[] sizes, long[] strides) {
         this.sizes = sizes;
         this.strides = strides;
     }
 
-    /** Returns {@link #sizes} */
-    public long[] sizes() { return sizes; }
-    /** Returns {@link #strides} */
-    public long[] strides() { return strides; }
+    /**
+     * Returns {@link #sizes}
+     */
+    public long[] sizes() {
+        return sizes;
+    }
 
-    /** Returns {@code sizes[0]} */
-    public long rows() { return sizes[0]; }
-    /** Returns {@code sizes[1]} */
-    public long cols() { return sizes[1]; }
+    /**
+     * Returns {@link #strides}
+     */
+    public long[] strides() {
+        return strides;
+    }
 
-    /** Returns {@code sizes[1]} */
-    public long width() { return sizes[1]; }
-    /** Returns {@code sizes[0]} */
-    public long height() { return sizes[0]; }
-    /** Returns {@code sizes[2]} */
-    public long channels() { return sizes[2]; }
+    /**
+     * Returns {@code sizes[0]}
+     */
+    public long rows() {
+        return sizes[0];
+    }
+
+    /**
+     * Returns {@code sizes[1]}
+     */
+    public long cols() {
+        return sizes[1];
+    }
+
+    /**
+     * Returns {@code sizes[1]}
+     */
+    public long width() {
+        return sizes[1];
+    }
+
+    /**
+     * Returns {@code sizes[0]}
+     */
+    public long height() {
+        return sizes[0];
+    }
+
+    /**
+     * Returns {@code sizes[2]}
+     */
+    public long channels() {
+        return sizes[2];
+    }
 
     protected static final long checkIndex(long i, long size) {
         if (i < 0 || i >= size) {
@@ -104,24 +141,47 @@ public abstract class Indexer implements AutoCloseable {
         return index;
     }
 
-    /** Returns the backing array, or {@code null} if none */
-    public Object array() { return null; }
-    /** Returns the backing buffer, or {@code null} if none */
-    public Buffer buffer() { return null; }
-    /** Returns the backing pointer, or {@code null} if none */
-    public Pointer pointer() { return null; }
-    /** Makes sure changes are reflected onto the backing memory and clears any references. */
+    /**
+     * Returns the backing array, or {@code null} if none
+     */
+    public Object array() {
+        return null;
+    }
+
+    /**
+     * Returns the backing buffer, or {@code null} if none
+     */
+    public Buffer buffer() {
+        return null;
+    }
+
+    /**
+     * Returns the backing pointer, or {@code null} if none
+     */
+    public Pointer pointer() {
+        return null;
+    }
+
+    /**
+     * Makes sure changes are reflected onto the backing memory and clears any references.
+     */
     public abstract void release();
 
-    /** Calls {@code get(int...indices)} and returns the value as a double. */
+    /**
+     * Calls {@code get(int...indices)} and returns the value as a double.
+     */
     public abstract double getDouble(long... indices);
-    /** Casts value to primitive type and calls {@code put(long[] indices, <type> value)}. */
+
+    /**
+     * Casts value to primitive type and calls {@code put(long[] indices, <type> value)}.
+     */
     public abstract Indexer putDouble(long[] indices, double value);
 
-    @Override public String toString() {
-        long rows     = sizes.length > 0 ? sizes[0] : 1,
-             cols     = sizes.length > 1 ? sizes[1] : 1,
-             channels = sizes.length > 2 ? sizes[2] : 1;
+    @Override
+    public String toString() {
+        long rows = sizes.length > 0 ? sizes[0] : 1,
+                cols = sizes.length > 1 ? sizes[1] : 1,
+                channels = sizes.length > 2 ? sizes[2] : 1;
         StringBuilder s = new StringBuilder(rows > 1 ? "\n[ " : "[ ");
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -130,7 +190,7 @@ public abstract class Indexer implements AutoCloseable {
                 }
                 for (int k = 0; k < channels; k++) {
                     double v = getDouble(i, j, k);
-                    s.append((float)v);
+                    s.append((float) v);
                     if (k < channels - 1) {
                         s.append(", ");
                     }

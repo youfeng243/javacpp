@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.tools.Generator;
 
@@ -19,11 +20,12 @@ import org.bytedeco.javacpp.tools.Generator;
  * with {@code NativeDeallocator}, based on the {@code delete[]} operator, if
  * not additionally annotated with {@link NoDeallocator}.
  *
+ * @author Samuel Audet
  * @see Pointer#init(long, long, long, long)
  * @see Generator
- *
- * @author Samuel Audet
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface ArrayAllocator { }
+public @interface ArrayAllocator {
+}

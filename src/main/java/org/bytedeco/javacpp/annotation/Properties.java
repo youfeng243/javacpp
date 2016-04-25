@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.tools.Builder;
 import org.bytedeco.javacpp.tools.Generator;
@@ -24,25 +25,39 @@ import org.bytedeco.javacpp.tools.Parser;
  * Additionally, it is possible to inherit properties from another class also
  * annotated with this annotation, and specialize further for the current class.
  *
+ * @author Samuel Audet
  * @see Builder
  * @see Generator
  * @see Loader
  * @see Parser
- *
- * @author Samuel Audet
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Properties {
-    /** A list of classes from which to inherit properties. */
+    /**
+     * A list of classes from which to inherit properties.
+     */
     Class[] inherit() default {};
-    /** A list of platform names to be used as default for {@link #value()}. */
+
+    /**
+     * A list of platform names to be used as default for {@link #value()}.
+     */
     String[] names() default {};
-    /** A list of properties for different platforms. */
+
+    /**
+     * A list of properties for different platforms.
+     */
     Platform[] value() default {};
-    /** The target Java source code file of the {@link Parser}. */
+
+    /**
+     * The target Java source code file of the {@link Parser}.
+     */
     String target() default "";
-    /** An optional helper class the {@link Parser} should use as base of the target.
-        Defaults to the class where this annotation was found. */
+
+    /**
+     * An optional helper class the {@link Parser} should use as base of the target.
+     * Defaults to the class where this annotation was found.
+     */
     String helper() default "";
 }

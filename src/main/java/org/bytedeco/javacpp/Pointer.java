@@ -30,6 +30,7 @@ import java.lang.reflect.Modifier;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
 import org.bytedeco.javacpp.tools.Generator;
 import org.bytedeco.javacpp.tools.Logger;
 
@@ -44,6 +45,7 @@ import org.bytedeco.javacpp.tools.Logger;
  * <p>
  * For examples of subclasses, please refer to the following:
  *
+ * @author Samuel Audet
  * @see BytePointer
  * @see ShortPointer
  * @see IntPointer
@@ -55,12 +57,14 @@ import org.bytedeco.javacpp.tools.Logger;
  * @see BoolPointer
  * @see CLongPointer
  * @see SizeTPointer
- *
- * @author Samuel Audet
  */
 public class Pointer implements AutoCloseable {
-    /** Default constructor that does nothing. */
-    public Pointer() {}
+    /**
+     * Default constructor that does nothing.
+     */
+    public Pointer() {
+    }
+
     /**
      * Copies the address, position, limit, and capacity of another Pointer.
      * Also keeps a reference to it to prevent its memory from getting deallocated.
@@ -77,7 +81,11 @@ public class Pointer implements AutoCloseable {
             limit = p.limit;
             capacity = p.capacity;
             if (p.deallocator != null) {
-                deallocator = new Deallocator() { public void deallocate() { p.deallocate(); } };
+                deallocator = new Deallocator() {
+                    public void deallocate() {
+                        p.deallocate();
+                    }
+                };
             }
         }
     }
@@ -96,16 +104,23 @@ public class Pointer implements AutoCloseable {
             position = b.position();
             limit = b.limit();
             capacity = b.capacity();
-            deallocator = new Deallocator() { Buffer bb = b; public void deallocate() { bb = null; } };
+            deallocator = new Deallocator() {
+                Buffer bb = b;
+
+                public void deallocate() {
+                    bb = null;
+                }
+            };
         }
     }
+
     private native void allocate(Buffer b);
 
     /**
      * Called by native libraries to initialize the object fields.
      *
-     * @param allocatedAddress the new address value of allocated native memory
-     * @param allocatedCapacity the amount of elements allocated (initial limit and capacity)
+     * @param allocatedAddress   the new address value of allocated native memory
+     * @param allocatedCapacity  the amount of elements allocated (initial limit and capacity)
      * @param deallocatorAddress the pointer to the native deallocation function
      * @see NativeDeallocator
      */
@@ -119,7 +134,9 @@ public class Pointer implements AutoCloseable {
         }
     }
 
-    /** The interface to implement to produce a Deallocator usable by Pointer. */
+    /**
+     * The interface to implement to produce a Deallocator usable by Pointer.
+     */
     protected interface Deallocator {
         void deallocate();
     }
@@ -131,7 +148,7 @@ public class Pointer implements AutoCloseable {
      * @return the Pointer
      */
     protected static <P extends Pointer> P withDeallocator(P p) {
-        return (P)p.deallocator(new CustomDeallocator(p));
+        return (P) p.deallocator(new CustomDeallocator(p));
     }
 
     /**
@@ -172,7 +189,8 @@ public class Pointer implements AutoCloseable {
         Pointer pointer = null;
         Method method = null;
 
-        @Override public void deallocate() {
+        @Override
+        public void deallocate() {
             try {
                 method.invoke(null, pointer);
                 pointer.setNull();
@@ -181,7 +199,8 @@ public class Pointer implements AutoCloseable {
             }
         }
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return getClass().getName() + "[pointer=" + pointer + ",method=" + method + "]";
         }
     }
@@ -201,7 +220,8 @@ public class Pointer implements AutoCloseable {
         private long ownerAddress;
         private long deallocatorAddress;
 
-        @Override public void deallocate() {
+        @Override
+        public void deallocate() {
             if (ownerAddress != 0 && deallocatorAddress != 0) {
                 deallocate(ownerAddress, deallocatorAddress);
                 ownerAddress = deallocatorAddress = 0;
@@ -210,7 +230,8 @@ public class Pointer implements AutoCloseable {
 
         private native void deallocate(long ownerAddress, long deallocatorAddress);
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return getClass().getName() + "[ownerAddress=0x" + Long.toHexString(ownerAddress)
                     + ",deallocatorAddress=0x" + Long.toHexString(deallocatorAddress) + "]";
         }
@@ -266,7 +287,8 @@ public class Pointer implements AutoCloseable {
             }
         }
 
-        @Override public void clear() {
+        @Override
+        public void clear() {
             super.clear();
             if (deallocator != null) {
                 if (logger.isDebugEnabled()) {
@@ -277,19 +299,24 @@ public class Pointer implements AutoCloseable {
             }
         }
 
-        @Override public String toString() {
+        @Override
+        public String toString() {
             return getClass().getName() + "[deallocator=" + deallocator + "]";
         }
     }
 
     private static final Logger logger = Logger.create(Pointer.class);
 
-    /** The {@link ReferenceQueue} used by {@link DeallocatorReference}.
-     * Initialized to null if the "org.bytedeco.javacpp.nopointergc" system property is "true". */
+    /**
+     * The {@link ReferenceQueue} used by {@link DeallocatorReference}.
+     * Initialized to null if the "org.bytedeco.javacpp.nopointergc" system property is "true".
+     */
     private static final ReferenceQueue<Pointer> referenceQueue;
 
-    /** Maximum amount of memory registered with live deallocators before forcing call to {@link System#gc()}.
-     * Set via "org.bytedeco.javacpp.maxbytes" system property, defaults to {@link Runtime#maxMemory()}. */
+    /**
+     * Maximum amount of memory registered with live deallocators before forcing call to {@link System#gc()}.
+     * Set via "org.bytedeco.javacpp.maxbytes" system property, defaults to {@link Runtime#maxMemory()}.
+     */
     static final long maxBytes;
 
     static {
@@ -308,44 +335,66 @@ public class Pointer implements AutoCloseable {
         maxBytes = m;
     }
 
-    /** Clears, deallocates, and removes all garbage collected objects from the {@link #referenceQueue}. */
+    /**
+     * Clears, deallocates, and removes all garbage collected objects from the {@link #referenceQueue}.
+     */
     public static void deallocateReferences() {
         DeallocatorReference r;
-        while (referenceQueue != null && (r = (DeallocatorReference)referenceQueue.poll()) != null) {
+        while (referenceQueue != null && (r = (DeallocatorReference) referenceQueue.poll()) != null) {
             r.clear();
             r.remove();
         }
     }
 
-    /** The native address of this Pointer, which can be an array. */
+    /**
+     * The native address of this Pointer, which can be an array.
+     */
     protected long address = 0;
-    /** The index of the element of a native array that should be accessed. */
+    /**
+     * The index of the element of a native array that should be accessed.
+     */
     protected long position = 0;
-    /** The index of the first element that should not be accessed, or 0 if unknown. */
+    /**
+     * The index of the first element that should not be accessed, or 0 if unknown.
+     */
     protected long limit = 0;
-    /** The number of elements contained in this native array, or 0 if unknown. */
+    /**
+     * The number of elements contained in this native array, or 0 if unknown.
+     */
     protected long capacity = 0;
-    /** The deallocator associated with this Pointer that should be called on garbage collection. */
+    /**
+     * The deallocator associated with this Pointer that should be called on garbage collection.
+     */
     private Deallocator deallocator = null;
 
-    /** Returns {@code address == 0}. */
+    /**
+     * Returns {@code address == 0}.
+     */
     public boolean isNull() {
         return address == 0;
     }
-    /** Sets {@link #address} to 0. */
+
+    /**
+     * Sets {@link #address} to 0.
+     */
     public void setNull() {
         address = 0;
     }
 
-    /** Returns {@link #address}. */
+    /**
+     * Returns {@link #address}.
+     */
     public long address() {
         return address;
     }
 
-    /** Returns {@link #position}. */
+    /**
+     * Returns {@link #position}.
+     */
     public long position() {
         return position;
     }
+
     /**
      * Sets the position and returns this. That makes the {@code array.position(i)}
      * statement sort of equivalent to the {@code array[i]} statement in C++.
@@ -355,13 +404,16 @@ public class Pointer implements AutoCloseable {
      */
     public <P extends Pointer> P position(long position) {
         this.position = position;
-        return (P)this;
+        return (P) this;
     }
 
-    /** Returns {@link #limit}. */
+    /**
+     * Returns {@link #limit}.
+     */
     public long limit() {
         return limit;
     }
+
     /**
      * Sets the limit and returns this.
      * Used to limit the size of an operation on this object.
@@ -371,13 +423,16 @@ public class Pointer implements AutoCloseable {
      */
     public <P extends Pointer> P limit(long limit) {
         this.limit = limit;
-        return (P)this;
+        return (P) this;
     }
 
-    /** Returns {@link #capacity}. */
+    /**
+     * Returns {@link #capacity}.
+     */
     public long capacity() {
         return capacity;
     }
+
     /**
      * Sets the capacity and returns this.
      * Should not be called more than once after allocation.
@@ -388,13 +443,16 @@ public class Pointer implements AutoCloseable {
     public <P extends Pointer> P capacity(long capacity) {
         this.limit = capacity;
         this.capacity = capacity;
-        return (P)this;
+        return (P) this;
     }
 
-    /** Returns {@link #deallocator}. */
+    /**
+     * Returns {@link #deallocator}.
+     */
     protected Deallocator deallocator() {
         return deallocator;
     }
+
     /**
      * Sets the deallocator and returns this. Also clears current deallocator
      * if not {@code null}. That is, it deallocates previously allocated memory.
@@ -415,7 +473,7 @@ public class Pointer implements AutoCloseable {
         if (deallocator != null && !deallocator.equals(null)) {
             this.deallocator = deallocator;
             DeallocatorReference r = deallocator instanceof DeallocatorReference ?
-                    (DeallocatorReference)deallocator :
+                    (DeallocatorReference) deallocator :
                     new DeallocatorReference(this, deallocator);
             if (maxBytes > 0 && DeallocatorReference.totalBytes + r.bytes > maxBytes) {
                 // try to get some more memory back
@@ -437,21 +495,28 @@ public class Pointer implements AutoCloseable {
             }
             r.add();
         }
-        return (P)this;
+        return (P) this;
     }
 
-    /** Calls {@code deallocate()}. */
-    @Override public void close() {
+    /**
+     * Calls {@code deallocate()}.
+     */
+    @Override
+    public void close() {
         deallocate();
     }
 
-    /** Calls {@code deallocate(true)}. */
+    /**
+     * Calls {@code deallocate(true)}.
+     */
     public void deallocate() {
         deallocate(true);
     }
+
     /**
      * Explicitly manages native memory without waiting after the garbage collector.
      * Has no effect if no deallocator was previously set with {@link #deallocator(Deallocator)}.
+     *
      * @param deallocate if true, deallocates, else does not, but disables garbage collection
      */
     public void deallocate(boolean deallocate) {
@@ -461,7 +526,7 @@ public class Pointer implements AutoCloseable {
             }
             deallocator.deallocate();
             address = 0;
-        } else synchronized(DeallocatorReference.class) {
+        } else synchronized (DeallocatorReference.class) {
             DeallocatorReference r = DeallocatorReference.head;
             while (r != null) {
                 if (r.deallocator == deallocator) {
@@ -475,7 +540,9 @@ public class Pointer implements AutoCloseable {
         }
     }
 
-    /** Returns {@code Loader.offsetof(getClass(), member)} or -1 on error. */
+    /**
+     * Returns {@code Loader.offsetof(getClass(), member)} or -1 on error.
+     */
     public int offsetof(String member) {
         int offset = -1;
         try {
@@ -489,7 +556,9 @@ public class Pointer implements AutoCloseable {
         return offset;
     }
 
-    /** Returns 1 for Pointer or BytePointer else {@code Loader.sizeof(getClass())} or -1 on error. */
+    /**
+     * Returns 1 for Pointer or BytePointer else {@code Loader.sizeof(getClass())} or -1 on error.
+     */
     public int sizeof() {
         Class c = getClass();
         if (c == Pointer.class || c == BytePointer.class) {
@@ -501,6 +570,7 @@ public class Pointer implements AutoCloseable {
     }
 
     private native ByteBuffer asDirectBuffer();
+
     /**
      * Returns a ByteBuffer covering the memory space from this.position to this.limit.
      * If limit == 0, it uses position + 1 instead. The way the methods were designed
@@ -525,6 +595,7 @@ public class Pointer implements AutoCloseable {
         limit = arrayLimit;
         return b;
     }
+
     /**
      * Same as {@link #asByteBuffer()}, but can be overridden to return subclasses of Buffer.
      *
@@ -542,10 +613,15 @@ public class Pointer implements AutoCloseable {
     }
 
     public static native Pointer memchr(Pointer p, int ch, long size);
+
     public static native int memcmp(Pointer p1, Pointer p2, long size);
+
     public static native Pointer memcpy(Pointer dst, Pointer src, long size);
+
     public static native Pointer memmove(Pointer dst, Pointer src, long size);
+
     public static native Pointer memset(Pointer dst, int ch, long size);
+
     /**
      * Calls in effect {@code memcpy(this.address + this.position, p.address + p.position, length)},
      * where {@code length = sizeof(p) * (p.limit - p.position)}.
@@ -567,8 +643,9 @@ public class Pointer implements AutoCloseable {
         memcpy(this, p, length);
         position /= size;
         p.position /= psize;
-        return (P)this;
+        return (P) this;
     }
+
     /**
      * Calls in effect {@code memset(address + position, b, length)},
      * where {@code length = sizeof() * (limit - position)}.
@@ -587,20 +664,26 @@ public class Pointer implements AutoCloseable {
         position *= size;
         memset(this, b, length);
         position /= size;
-        return (P)this;
+        return (P) this;
     }
-    /** Returns {@code fill(0)}. */
-    public <P extends Pointer> P zero() { return (P)fill(0); }
+
+    /**
+     * Returns {@code fill(0)}.
+     */
+    public <P extends Pointer> P zero() {
+        return (P) fill(0);
+    }
 
     /**
      * Checks for equality with argument. Defines obj to be equal if {@code
-     *     (obj == null && this.address == 0) ||
-     *     (obj.address == this.address && obj.position == this.position)}.
+     * (obj == null && this.address == 0) ||
+     * (obj.address == this.address && obj.position == this.position)}.
      *
      * @param obj the object to compare this Pointer to
      * @return true if obj is equal
      */
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         } else if (obj == null) {
@@ -608,19 +691,25 @@ public class Pointer implements AutoCloseable {
         } else if (obj.getClass() != getClass()) {
             return false;
         } else {
-            Pointer other = (Pointer)obj;
+            Pointer other = (Pointer) obj;
             return address == other.address && position == other.position;
         }
     }
 
-    /** Returns {@code (int)address}. */
-    @Override public int hashCode() {
-        return (int)address;
+    /**
+     * Returns {@code (int)address}.
+     */
+    @Override
+    public int hashCode() {
+        return (int) address;
     }
 
-    /** Returns a {@link String} representation of {@link #address},
-     * {@link #position}, {@link #limit}, {@link #capacity}, and {@link #deallocator}. */
-    @Override public String toString() {
+    /**
+     * Returns a {@link String} representation of {@link #address},
+     * {@link #position}, {@link #limit}, {@link #capacity}, and {@link #deallocator}.
+     */
+    @Override
+    public String toString() {
         return getClass().getName() + "[address=0x" + Long.toHexString(address) +
                 ",position=" + position + ",limit=" + limit + ",capacity=" + capacity + ",deallocator=" + deallocator + "]";
     }

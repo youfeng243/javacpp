@@ -23,7 +23,6 @@
 package org.bytedeco.javacpp.tools;
 
 /**
- *
  * @author Samuel Audet
  */
 class Declarator {

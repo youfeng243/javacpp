@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
+
 import org.bytedeco.javacpp.annotation.Platform;
 import org.bytedeco.javacpp.tools.Builder;
 import org.bytedeco.javacpp.tools.Logger;
@@ -56,16 +57,20 @@ public class Loader {
 
     private static final Logger logger = Logger.create(Loader.class);
 
-    /** Value created out of "java.vm.name", "os.name", and "os.arch" system properties.
-     *  Returned by {@link #getPlatform()} as default. */
+    /**
+     * Value created out of "java.vm.name", "os.name", and "os.arch" system properties.
+     * Returned by {@link #getPlatform()} as default.
+     */
     private static final String PLATFORM;
-    /** Default platform properties loaded and returned by {@link #loadProperties()}. */
+    /**
+     * Default platform properties loaded and returned by {@link #loadProperties()}.
+     */
     private static Properties platformProperties = null;
 
     static {
         String jvmName = System.getProperty("java.vm.name", "").toLowerCase();
-        String osName  = System.getProperty("os.name", "").toLowerCase();
-        String osArch  = System.getProperty("os.arch", "").toLowerCase();
+        String osName = System.getProperty("os.name", "").toLowerCase();
+        String osArch = System.getProperty("os.arch", "").toLowerCase();
         String abiType = System.getProperty("sun.arch.abi", "").toLowerCase();
         if (jvmName.startsWith("dalvik") && osName.startsWith("linux")) {
             osName = "android";
@@ -88,7 +93,7 @@ public class Loader {
             osArch = "arm64";
         } else if ((osArch.startsWith("arm")) && abiType.equals("gnueabihf")) {
             osArch = "armhf";
-	} else if (osArch.startsWith("arm")) {
+        } else if (osArch.startsWith("arm")) {
             osArch = "arm";
         }
         PLATFORM = osName + "-" + osArch;
@@ -117,6 +122,7 @@ public class Loader {
         }
         return platformProperties = loadProperties(name);
     }
+
     /**
      * Loads from resources the default {@link Properties} of the specified platform name.
      *
@@ -205,6 +211,7 @@ public class Loader {
 
     /**
      * For all the classes, loads all properties from each Class annotations for the given platform.
+     *
      * @see #loadProperties(Class, java.util.Properties, boolean)
      */
     public static ClassProperties loadProperties(Class[] cls, Properties properties, boolean inherit) {
@@ -214,6 +221,7 @@ public class Loader {
         }
         return cp;
     }
+
     /**
      * Loads all properties from Class annotations for the given platform. The platform
      * of interest needs to be specified as the value of the "platform" key in the
@@ -221,9 +229,9 @@ public class Loader {
      * specified in the {@link org.bytedeco.javacpp.annotation.Properties#inherit()}
      * annotation recursively via the inherit argument.
      *
-     * @param cls the Class of which to return Properties
+     * @param cls        the Class of which to return Properties
      * @param properties the platform Properties to inherit
-     * @param inherit indicates whether or not to inherit properties from other classes
+     * @param inherit    indicates whether or not to inherit properties from other classes
      * @return all the properties associated with the Class for the given platform
      */
     public static ClassProperties loadProperties(Class cls, Properties properties, boolean inherit) {
@@ -242,7 +250,8 @@ public class Loader {
         Class[] classContext = null;
         try {
             new SecurityManager() {
-                @Override public Class[] getClassContext() {
+                @Override
+                public Class[] getClassContext() {
                     return super.getClassContext();
                 }
             }.getClassContext();
@@ -252,7 +261,7 @@ public class Loader {
         if (classContext != null) {
             for (int j = 0; j < classContext.length; j++) {
                 if (classContext[j] == Loader.class) {
-                    return classContext[i+j];
+                    return classContext[i + j];
                 }
             }
         } else {
@@ -261,7 +270,7 @@ public class Loader {
                 StackTraceElement[] classNames = Thread.currentThread().getStackTrace();
                 for (int j = 0; j < classNames.length; j++) {
                     if (Class.forName(classNames[j].getClassName()) == Loader.class) {
-                        return Class.forName(classNames[i+j].getClassName());
+                        return Class.forName(classNames[i + j].getClassName());
                     }
                 }
             } catch (ClassNotFoundException e) {
@@ -278,35 +287,37 @@ public class Loader {
      * @see #extractResource(URL, File, String, String)
      */
     public static File extractResource(String name, File directory,
-            String prefix, String suffix) throws IOException {
+                                       String prefix, String suffix) throws IOException {
         Class cls = getCallerClass(2);
         return extractResource(cls, name, directory, prefix, suffix);
     }
+
     /**
      * Extracts by name a resource using the {@link ClassLoader} of the specified {@link Class}.
      *
-     * @param cls the Class from which to load resources
+     * @param cls  the Class from which to load resources
      * @param name the name of the resource passed to {@link Class#getResource(String)}
      * @see #extractResource(URL, File, String, String)
      */
     public static File extractResource(Class cls, String name, File directory,
-            String prefix, String suffix) throws IOException {
+                                       String prefix, String suffix) throws IOException {
         return extractResource(cls.getResource(name), directory, prefix, suffix);
     }
+
     /**
      * Extracts a resource into the specified directory and with the specified
      * prefix and suffix for the filename. If both prefix and suffix are {@code null},
      * the original filename is used, so the directory must not be {@code null}.
      *
      * @param resourceURL the URL of the resource to extract
-     * @param directory the output directory ({@code null == System.getProperty("java.io.tmpdir")})
-     * @param prefix the prefix of the temporary filename to use
-     * @param suffix the suffix of the temporary filename to use
+     * @param directory   the output directory ({@code null == System.getProperty("java.io.tmpdir")})
+     * @param prefix      the prefix of the temporary filename to use
+     * @param suffix      the suffix of the temporary filename to use
      * @return the File object representing the extracted file
      * @throws IOException if fails to extract resource properly
      */
     public static File extractResource(URL resourceURL, File directory,
-            String prefix, String suffix) throws IOException {
+                                       String prefix, String suffix) throws IOException {
         InputStream is = resourceURL != null ? resourceURL.openStream() : null;
         OutputStream os = null;
         if (is == null) {
@@ -346,12 +357,18 @@ public class Loader {
         return file;
     }
 
-    /** User-specified cache directory set and returned by {@link #getCacheDir()}. */
+    /**
+     * User-specified cache directory set and returned by {@link #getCacheDir()}.
+     */
     static File cacheDir = null;
-    /** Temporary directory set and returned by {@link #getTempDir()}. */
+    /**
+     * Temporary directory set and returned by {@link #getTempDir()}.
+     */
     static File tempDir = null;
-    /** Contains all the native libraries that we have loaded to avoid reloading them. */
-    static Map<String,String> loadedLibraries = Collections.synchronizedMap(new HashMap<String,String>());
+    /**
+     * Contains all the native libraries that we have loaded to avoid reloading them.
+     */
+    static Map<String, String> loadedLibraries = Collections.synchronizedMap(new HashMap<String, String>());
 
     /**
      * Creates and returns {@code System.getProperty("org.bytedeco.javacpp.cachedir")}, or null when not set.
@@ -393,8 +410,10 @@ public class Loader {
         return tempDir;
     }
 
-    /** Returns {@code System.getProperty("org.bytedeco.javacpp.loadlibraries")}.
-     *  Flag set by the {@link Builder} to tell us not to try to load anything. */
+    /**
+     * Returns {@code System.getProperty("org.bytedeco.javacpp.loadlibraries")}.
+     * Flag set by the {@link Builder} to tell us not to try to load anything.
+     */
     public static boolean isLoadLibraries() {
         String s = System.getProperty("org.bytedeco.javacpp.loadlibraries", "true").toLowerCase();
         return s.equals("true") || s.equals("t") || s.equals("");
@@ -402,6 +421,7 @@ public class Loader {
 
     /**
      * Loads native libraries associated with the {@link Class} of the caller.
+     *
      * @return {@code load(getCallerClass(2)) }
      * @see #getCallerClass(int)
      * @see #load(Class)
@@ -410,12 +430,13 @@ public class Loader {
         Class cls = getCallerClass(2);
         return load(cls);
     }
+
     /**
      * Loads native libraries associated with the given {@link Class}.
      *
      * @param cls the Class to get native library information from
      * @return the full path to the main file loaded, or the library name if unknown
-     *         (but {@code if (!loadLibraries || cls == null) { return null; }})
+     * (but {@code if (!loadLibraries || cls == null) { return null; }})
      * @throws NoClassDefFoundError on Class initialization failure
      * @throws UnsatisfiedLinkError on native library loading failure
      */
@@ -485,23 +506,23 @@ public class Loader {
      * resources. But in case that fails, also searches the paths found in the
      * "platform.preloadpath" and "platform.linkpath" properties.
      *
-     * @param cls the Class whose package name and {@link ClassLoader} are used to extract from resources
-     * @param properties contains the directories to scan for if we fail to extract the library from resources
+     * @param cls            the Class whose package name and {@link ClassLoader} are used to extract from resources
+     * @param properties     contains the directories to scan for if we fail to extract the library from resources
      * @param libnameversion the name of the library + "@" + optional version tag
      * @return URLs that point to potential locations of the library
      */
     public static URL[] findLibrary(Class cls, ClassProperties properties, String libnameversion) {
         String[] s = libnameversion.split("@");
         String libname = s[0];
-        String version = s.length > 1 ? s[s.length-1] : "";
+        String version = s.length > 1 ? s[s.length - 1] : "";
 
         // If we do not already have the native library file ...
         String filename = loadedLibraries.get(libnameversion);
         if (filename != null) {
             try {
-                return new URL[] { new File(filename).toURI().toURL() };
+                return new URL[]{new File(filename).toURI().toURL()};
             } catch (IOException ex) {
-                return new URL[] { };
+                return new URL[]{};
             }
         }
 
@@ -509,16 +530,16 @@ public class Loader {
         String prefix = properties.getProperty("platform.library.prefix", "") + libname;
         String suffix = properties.getProperty("platform.library.suffix", "");
         String[] styles = {
-            prefix + suffix + version, // Linux style
-            prefix + version + suffix, // Mac OS X style
-            prefix + suffix            // without version
+                prefix + suffix + version, // Linux style
+                prefix + version + suffix, // Mac OS X style
+                prefix + suffix            // without version
         };
 
         String[] suffixes = properties.get("platform.library.suffix").toArray(new String[0]);
         if (suffixes.length > 1) {
             styles = new String[3 * suffixes.length];
             for (int i = 0; i < suffixes.length; i++) {
-                styles[3 * i    ] = prefix + suffixes[i] + version; // Linux style
+                styles[3 * i] = prefix + suffixes[i] + version; // Linux style
                 styles[3 * i + 1] = prefix + version + suffixes[i]; // Mac OS X style
                 styles[3 * i + 2] = prefix + suffixes[i];           // without version
             }
@@ -558,10 +579,10 @@ public class Loader {
      * Tries to load the library from the URLs in order, extracting resources as necessary.
      * Finally, if all fails, falls back on {@link System#loadLibrary(String)}.
      *
-     * @param urls the URLs to try loading the library from
+     * @param urls           the URLs to try loading the library from
      * @param libnameversion the name of the library + "@" + optional version tag
      * @return the full path of the file loaded, or the library name if unknown
-     *         (but {@code if (!loadLibraries) { return null; }})
+     * (but {@code if (!loadLibraries) { return null; }})
      * @throws UnsatisfiedLinkError on failure
      */
     public static String loadLibrary(URL[] urls, String libnameversion) {
@@ -667,7 +688,8 @@ public class Loader {
     static {
         if (getPlatform().startsWith("windows")) {
             Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     if (tempDir == null) {
                         return;
                     }
@@ -714,16 +736,16 @@ public class Loader {
      * is used to prevent the Loader from hanging onto Class objects the user may
      * be trying to unload.
      */
-    static WeakHashMap<Class<? extends Pointer>,HashMap<String,Integer>> memberOffsets =
-            new WeakHashMap<Class<? extends Pointer>,HashMap<String,Integer>>();
+    static WeakHashMap<Class<? extends Pointer>, HashMap<String, Integer>> memberOffsets =
+            new WeakHashMap<Class<? extends Pointer>, HashMap<String, Integer>>();
 
     /**
      * Called by native libraries to put {@code offsetof()} and {@code sizeof()} values in {@link #memberOffsets}.
      * Tries to load the Class object for typeName using the {@link ClassLoader} of the Loader.
      *
      * @param typeName the name of the peer Class acting as interface to the native type
-     * @param member the name of the native member variable (can be null to retrieve the Class object only)
-     * @param offset the value of {@code offsetof()} (or {@code sizeof()} when {@code member.equals("sizeof")})
+     * @param member   the name of the native member variable (can be null to retrieve the Class object only)
+     * @param offset   the value of {@code offsetof()} (or {@code sizeof()} when {@code member.equals("sizeof")})
      * @return {@code Class.forName(typeName, false)}
      * @throws ClassNotFoundException on Class initialization failure
      */
@@ -734,17 +756,18 @@ public class Loader {
         }
         return c;
     }
+
     /**
      * Called by native libraries to put {@code offsetof()} and {@code sizeof()} values in {@link #memberOffsets}.
      *
-     * @param type the peer Class acting as interface to the native type
+     * @param type   the peer Class acting as interface to the native type
      * @param member the name of the native member variable
      * @param offset the value of {@code offsetof()} (or {@code sizeof()} when {@code member.equals("sizeof")})
      */
     static synchronized void putMemberOffset(Class<? extends Pointer> type, String member, int offset) {
-        HashMap<String,Integer> offsets = memberOffsets.get(type);
+        HashMap<String, Integer> offsets = memberOffsets.get(type);
         if (offsets == null) {
-            memberOffsets.put(type, offsets = new HashMap<String,Integer>());
+            memberOffsets.put(type, offsets = new HashMap<String, Integer>());
         }
         offsets.put(member, offset);
     }
@@ -752,7 +775,7 @@ public class Loader {
     /**
      * Gets {@code offsetof()} values from {@link #memberOffsets} filled by native libraries.
      *
-     * @param type the peer Class acting as interface to the native type
+     * @param type   the peer Class acting as interface to the native type
      * @param member the name of the native member variable
      * @return {@code memberOffsets.get(type).get(member)}
      */

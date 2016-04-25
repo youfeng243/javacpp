@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.tools.Generator;
 
 /**
@@ -17,11 +18,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * operator, those can be accessed as if they were functions (with the {@link Name}
  * annotation to specify the type) because they have the same syntax.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 public @interface Cast {
     String[] value();

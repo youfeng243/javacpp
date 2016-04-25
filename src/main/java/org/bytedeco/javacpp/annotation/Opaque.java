@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.tools.Generator;
 
@@ -14,10 +15,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * do not support arithmetic, so for peer classes thus annotated, {@link Generator}
  * then also ignores the {@link Pointer#position} value.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface Opaque { }
+public @interface Opaque {
+}

@@ -23,12 +23,15 @@
 package org.bytedeco.javacpp.tools;
 
 /**
- *
  * @author Samuel Audet
  */
 class Type {
-    Type() { }
-    Type(String name) { cppName = javaName = name; }
+    Type() {
+    }
+
+    Type(String name) {
+        cppName = javaName = name;
+    }
 
     int indirections = 0;
     boolean anonymous = false, constPointer = false, constValue = false, constructor = false,
@@ -38,13 +41,14 @@ class Type {
     Type[] arguments = null;
     Attribute[] attributes = null;
 
-    @Override public boolean equals(Object obj) {
+    @Override
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         } else if (obj == null) {
             return false;
         } else if (obj.getClass() == getClass()) {
-            Type other = (Type)obj;
+            Type other = (Type) obj;
             return cppName.equals(other.cppName) && javaName.equals(other.javaName);
         } else {
             return false;

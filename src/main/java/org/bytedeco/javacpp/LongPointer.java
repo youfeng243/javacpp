@@ -37,10 +37,11 @@ public class LongPointer extends Pointer {
      * @param array the array to copy
      * @see #put(long[])
      */
-    public LongPointer(long ... array) {
+    public LongPointer(long... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -58,6 +59,7 @@ public class LongPointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code long long} array of the given size.
      *
@@ -70,31 +72,65 @@ public class LongPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public LongPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public LongPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public LongPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public LongPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public LongPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public LongPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public LongPointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public LongPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public LongPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public LongPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** @return {@code get(0)} */
-    public long get() { return get(0); }
-    /** @return the i-th {@code long long} of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public long get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code long long} of a native array
+     */
     public native long get(long i);
-    /** @return {@code put(0, l)} */
-    public LongPointer put(long l) { return put(0, l); }
+
+    /**
+     * @return {@code put(0, l)}
+     */
+    public LongPointer put(long l) {
+        return put(0, l);
+    }
+
     /**
      * Copies the {@code long long} value to the i-th element of a native array.
      *
@@ -104,31 +140,45 @@ public class LongPointer extends Pointer {
      */
     public native LongPointer put(long i, long l);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public LongPointer get(long[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public LongPointer put(long ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public LongPointer get(long[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public LongPointer put(long... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native LongPointer get(long[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native LongPointer put(long[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asLongBuffer()} */
-    @Override public final LongBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asLongBuffer()}
+     */
+    @Override
+    public final LongBuffer asBuffer() {
         return asByteBuffer().asLongBuffer();
     }
 }

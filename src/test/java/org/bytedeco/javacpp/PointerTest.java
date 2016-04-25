@@ -29,10 +29,12 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
+
 import org.bytedeco.javacpp.annotation.Platform;
 import org.bytedeco.javacpp.tools.Builder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -43,14 +45,16 @@ import static org.junit.Assert.*;
 @Platform(define = {"NATIVE_ALLOCATOR malloc", "NATIVE_DEALLOCATOR free"})
 public class PointerTest {
 
-    @BeforeClass public static void setUpClass() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         Class c = PointerTest.class;
         Builder builder = new Builder().classesOrPackages(c.getName());
         File[] outputFiles = builder.build();
         Loader.load(c);
     }
 
-    @Test public void testBytePointer() {
+    @Test
+    public void testBytePointer() {
         System.out.println("BytePointer");
 
         int byteSize = Byte.SIZE / 8;
@@ -62,8 +66,8 @@ public class PointerTest {
         assertEquals(array.length, pointer.capacity());
 
         for (int i = 0; i < array.length; i++) {
-            array[i] = (byte)i;
-            pointer.put(i, (byte)i);
+            array[i] = (byte) i;
+            pointer.put(i, (byte) i);
             assertEquals(array[i], pointer.get(i));
         }
 
@@ -94,7 +98,7 @@ public class PointerTest {
             if (i < 10) {
                 assertEquals(0, pointer2.get(i));
             } else if (i < 20) {
-                assertEquals((byte)0xFF, pointer2.get(i));
+                assertEquals((byte) 0xFF, pointer2.get(i));
             } else if (i < 30) {
                 assertEquals(pointer.get(i), pointer2.get(i));
             } else {
@@ -113,7 +117,8 @@ public class PointerTest {
         try {
             new BytePointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -124,7 +129,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * byteSize);
     }
 
-    @Test public void testShortPointer() {
+    @Test
+    public void testShortPointer() {
         System.out.println("ShortPointer");
 
         int shortSize = Short.SIZE / 8;
@@ -136,8 +142,8 @@ public class PointerTest {
         assertEquals(array.length, pointer.capacity());
 
         for (int i = 0; i < array.length; i++) {
-            array[i] = (short)i;
-            pointer.put(i, (short)i);
+            array[i] = (short) i;
+            pointer.put(i, (short) i);
             assertEquals(array[i], pointer.get(i));
         }
 
@@ -168,7 +174,7 @@ public class PointerTest {
             if (i < 10) {
                 assertEquals(0, pointer2.get(i));
             } else if (i < 20) {
-                assertEquals((short)0xFFFF, pointer2.get(i));
+                assertEquals((short) 0xFFFF, pointer2.get(i));
             } else if (i < 30) {
                 assertEquals(pointer.get(i), pointer2.get(i));
             } else {
@@ -187,7 +193,8 @@ public class PointerTest {
         try {
             new ShortPointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -198,7 +205,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * shortSize);
     }
 
-    @Test public void testIntPointer() {
+    @Test
+    public void testIntPointer() {
         System.out.println("IntPointer");
 
         int intSize = Integer.SIZE / 8;
@@ -261,7 +269,8 @@ public class PointerTest {
         try {
             new IntPointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -272,7 +281,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * intSize);
     }
 
-    @Test public void testLongPointer() {
+    @Test
+    public void testLongPointer() {
         System.out.println("LongPointer");
 
         int longSize = Long.SIZE / 8;
@@ -316,7 +326,7 @@ public class PointerTest {
             if (i < 10) {
                 assertEquals(0, pointer2.get(i));
             } else if (i < 20) {
-                assertEquals((long)-1, pointer2.get(i));
+                assertEquals((long) -1, pointer2.get(i));
             } else if (i < 30) {
                 assertEquals(pointer.get(i), pointer2.get(i));
             } else {
@@ -335,7 +345,8 @@ public class PointerTest {
         try {
             new LongPointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -346,7 +357,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * longSize);
     }
 
-    @Test public void testFloatPointer() {
+    @Test
+    public void testFloatPointer() {
         System.out.println("FloatPointer");
 
         int floatSize = Float.SIZE / 8;
@@ -409,7 +421,8 @@ public class PointerTest {
         try {
             new FloatPointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -420,7 +433,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * floatSize);
     }
 
-    @Test public void testDoublePointer() {
+    @Test
+    public void testDoublePointer() {
         System.out.println("DoublePointer");
 
         int doubleSize = Double.SIZE / 8;
@@ -464,7 +478,7 @@ public class PointerTest {
             if (i < 10) {
                 assertEquals(0, pointer2.get(i), 0);
             } else if (i < 20) {
-                assertEquals(Double.longBitsToDouble((long)-1), pointer2.get(i), 0);
+                assertEquals(Double.longBitsToDouble((long) -1), pointer2.get(i), 0);
             } else if (i < 30) {
                 assertEquals(pointer.get(i), pointer2.get(i), 0);
             } else {
@@ -483,7 +497,8 @@ public class PointerTest {
         try {
             new DoublePointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }
@@ -494,7 +509,8 @@ public class PointerTest {
         System.out.println(Pointer.DeallocatorReference.totalBytes + " " + chunkSize * doubleSize);
     }
 
-    @Test public void testCharPointer() {
+    @Test
+    public void testCharPointer() {
         System.out.println("CharPointer");
 
         int charSize = Character.SIZE / 8;
@@ -506,8 +522,8 @@ public class PointerTest {
         assertEquals(array.length, pointer.capacity());
 
         for (int i = 0; i < array.length; i++) {
-            array[i] = (char)i;
-            pointer.put(i, (char)i);
+            array[i] = (char) i;
+            pointer.put(i, (char) i);
             assertEquals(array[i], pointer.get(i));
         }
 
@@ -538,7 +554,7 @@ public class PointerTest {
             if (i < 10) {
                 assertEquals(0, pointer2.get(i));
             } else if (i < 20) {
-                assertEquals((char)0xFFFF, pointer2.get(i));
+                assertEquals((char) 0xFFFF, pointer2.get(i));
             } else if (i < 30) {
                 assertEquals(pointer.get(i), pointer2.get(i));
             } else {
@@ -557,7 +573,8 @@ public class PointerTest {
         try {
             new CharPointer(chunkSize);
             fail("OutOfMemoryError should have been thrown.");
-        } catch (OutOfMemoryError e) { }
+        } catch (OutOfMemoryError e) {
+        }
         for (int j = 0; j < chunks; j++) {
             pointers[j] = null;
         }

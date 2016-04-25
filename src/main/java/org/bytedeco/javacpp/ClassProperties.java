@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.bytedeco.javacpp.annotation.Platform;
 
 /**
@@ -40,11 +41,13 @@ import org.bytedeco.javacpp.annotation.Platform;
  *
  * @see Loader#loadProperties(Class, java.util.Properties, boolean)
  */
-public class ClassProperties extends HashMap<String,List<String>> {
-    public ClassProperties() { }
+public class ClassProperties extends HashMap<String, List<String>> {
+    public ClassProperties() {
+    }
+
     public ClassProperties(Properties properties) {
-        platform      = properties.getProperty("platform");
-        platformRoot  = properties.getProperty("platform.root");
+        platform = properties.getProperty("platform");
+        platformRoot = properties.getProperty("platform.root");
         pathSeparator = properties.getProperty("platform.path.separator");
         if (platformRoot == null || platformRoot.length() == 0) {
             platformRoot = ".";
@@ -53,7 +56,7 @@ public class ClassProperties extends HashMap<String,List<String>> {
             platformRoot += File.separator;
         }
         for (Map.Entry e : properties.entrySet()) {
-            String k = (String)e.getKey(), v = (String)e.getValue();
+            String k = (String) e.getKey(), v = (String) e.getValue();
             if (v == null || v.length() == 0) {
                 continue;
             }
@@ -78,16 +81,17 @@ public class ClassProperties extends HashMap<String,List<String>> {
     public List<String> get(String key) {
         List<String> list = super.get(key);
         if (list == null) {
-            put((String)key, list = new ArrayList<String>());
+            put((String) key, list = new ArrayList<String>());
         }
         return list;
     }
 
-    public void addAll(String key, String ... values) {
+    public void addAll(String key, String... values) {
         if (values != null) {
             addAll(key, Arrays.asList(values));
         }
     }
+
     public void addAll(String key, Collection<String> values) {
         if (values != null) {
             String root = null;
@@ -115,10 +119,12 @@ public class ClassProperties extends HashMap<String,List<String>> {
     public String getProperty(String key) {
         return getProperty(key, null);
     }
+
     public String getProperty(String key, String defaultValue) {
         List<String> values = get(key);
         return values.isEmpty() ? defaultValue : values.get(0);
     }
+
     public String setProperty(String key, String value) {
         List<String> values = get(key);
         String oldValue = values.isEmpty() ? null : values.get(0);
@@ -146,7 +152,7 @@ public class ClassProperties extends HashMap<String,List<String>> {
         if (classProperties == null) {
             Platform platform = c.getAnnotation(Platform.class);
             if (platform != null) {
-                platforms = new Platform[] { platform };
+                platforms = new Platform[]{platform};
             }
         } else {
             Class[] classes = classProperties.inherit();
@@ -177,11 +183,11 @@ public class ClassProperties extends HashMap<String,List<String>> {
         }
 
         String[] pragma = {}, define = {}, include = {}, cinclude = {}, includepath = {}, compiler = {},
-                 linkpath = {}, link = {}, frameworkpath = {}, framework = {}, preloadpath = {}, preload = {};
+                linkpath = {}, link = {}, frameworkpath = {}, framework = {}, preloadpath = {}, preload = {};
         String library = "jni" + c.getSimpleName();
         for (Platform p : platforms != null ? platforms : new Platform[0]) {
-            String[][] names = { p.value().length > 0 ? p.value() : defaultNames, p.not() };
-            boolean[] matches = { false, false };
+            String[][] names = {p.value().length > 0 ? p.value() : defaultNames, p.not()};
+            boolean[] matches = {false, false};
             for (int i = 0; i < names.length; i++) {
                 for (String s : names[i]) {
                     if (platform.startsWith(s)) {
@@ -191,19 +197,45 @@ public class ClassProperties extends HashMap<String,List<String>> {
                 }
             }
             if ((names[0].length == 0 || matches[0]) && (names[1].length == 0 || !matches[1])) {
-                if (p.pragma()     .length > 0) { pragma      = p.pragma();      }
-                if (p.define()     .length > 0) { define      = p.define();      }
-                if (p.include()    .length > 0) { include     = p.include();     }
-                if (p.cinclude()   .length > 0) { cinclude    = p.cinclude();    }
-                if (p.includepath().length > 0) { includepath = p.includepath(); }
-                if (p.compiler()   .length > 0) { compiler    = p.compiler();    }
-                if (p.linkpath()   .length > 0) { linkpath    = p.linkpath();    }
-                if (p.link()       .length > 0) { link        = p.link();        }
-                if (p.frameworkpath().length > 0) { frameworkpath = p.frameworkpath(); }
-                if (p.framework()  .length > 0) { framework   = p.framework();   }
-                if (p.preloadpath().length > 0) { preloadpath = p.preloadpath(); }
-                if (p.preload()    .length > 0) { preload     = p.preload();     }
-                if (p.library().length() > 0)   { library     = p.library();     }
+                if (p.pragma().length > 0) {
+                    pragma = p.pragma();
+                }
+                if (p.define().length > 0) {
+                    define = p.define();
+                }
+                if (p.include().length > 0) {
+                    include = p.include();
+                }
+                if (p.cinclude().length > 0) {
+                    cinclude = p.cinclude();
+                }
+                if (p.includepath().length > 0) {
+                    includepath = p.includepath();
+                }
+                if (p.compiler().length > 0) {
+                    compiler = p.compiler();
+                }
+                if (p.linkpath().length > 0) {
+                    linkpath = p.linkpath();
+                }
+                if (p.link().length > 0) {
+                    link = p.link();
+                }
+                if (p.frameworkpath().length > 0) {
+                    frameworkpath = p.frameworkpath();
+                }
+                if (p.framework().length > 0) {
+                    framework = p.framework();
+                }
+                if (p.preloadpath().length > 0) {
+                    preloadpath = p.preloadpath();
+                }
+                if (p.preload().length > 0) {
+                    preload = p.preload();
+                }
+                if (p.library().length() > 0) {
+                    library = p.library();
+                }
             }
         }
         addAll("platform.pragma", pragma);

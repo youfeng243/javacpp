@@ -31,19 +31,29 @@ import org.bytedeco.javacpp.ShortPointer;
  * @author Samuel Audet
  */
 public class UShortRawIndexer extends UShortIndexer {
-    /** The instance for the raw memory interface. */
+    /**
+     * The instance for the raw memory interface.
+     */
     protected static final Raw RAW = Raw.getInstance();
-    /** The backing pointer. */
+    /**
+     * The backing pointer.
+     */
     protected ShortPointer pointer;
-    /** Base address and number of elements accessible. */
+    /**
+     * Base address and number of elements accessible.
+     */
     final long base, size;
 
-    /** Calls {@code UShortRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}. */
+    /**
+     * Calls {@code UShortRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}.
+     */
     public UShortRawIndexer(ShortPointer pointer) {
-        this(pointer, new long[] { pointer.limit() - pointer.position() }, new long[] { 1 });
+        this(pointer, new long[]{pointer.limit() - pointer.position()}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}.
+     */
     public UShortRawIndexer(ShortPointer pointer, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.pointer = pointer;
@@ -51,75 +61,105 @@ public class UShortRawIndexer extends UShortIndexer {
         size = pointer.limit() - pointer.position();
     }
 
-    @Override public Pointer pointer() {
+    @Override
+    public Pointer pointer() {
         return pointer;
     }
 
-    @Override public int get(long i) {
+    @Override
+    public int get(long i) {
         return RAW.getShort(base + checkIndex(i, size) * VALUE_BYTES) & 0xFFFF;
     }
-    @Override public UShortIndexer get(long i, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer get(long i, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
             s[offset + n] = get(i * strides[0] + n) & 0xFFFF;
         }
         return this;
     }
-    @Override public int get(long i, long j) {
+
+    @Override
+    public int get(long i, long j) {
         return get(i * strides[0] + j) & 0xFFFF;
     }
-    @Override public UShortIndexer get(long i, long j, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer get(long i, long j, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
             s[offset + n] = get(i * strides[0] + j * strides[1] + n) & 0xFFFF;
         }
         return this;
     }
-    @Override public int get(long i, long j, long k) {
+
+    @Override
+    public int get(long i, long j, long k) {
         return get(i * strides[0] + j * strides[1] + k) & 0xFFFF;
     }
-    @Override public int get(long... indices) {
+
+    @Override
+    public int get(long... indices) {
         return get(index(indices)) & 0xFFFF;
     }
-    @Override public UShortIndexer get(long[] indices, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer get(long[] indices, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
             s[offset + n] = get(index(indices) + n) & 0xFFFF;
         }
         return this;
     }
 
-    @Override public UShortIndexer put(long i, int s) {
-        RAW.putShort(base + checkIndex(i, size) * VALUE_BYTES, (short)s);
+    @Override
+    public UShortIndexer put(long i, int s) {
+        RAW.putShort(base + checkIndex(i, size) * VALUE_BYTES, (short) s);
         return this;
     }
-    @Override public UShortIndexer put(long i, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer put(long i, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            put(i * strides[0] + n, (short)s[offset + n]);
-        }
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, int s) {
-        put(i * strides[0] + j, (short)s);
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            put(i * strides[0] + j * strides[1] + n, (short)s[offset + n]);
-        }
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, long k, int s) {
-        put(i * strides[0] + j * strides[1] + k, (short)s);
-        return this;
-    }
-    @Override public UShortIndexer put(long[] indices, int s) {
-        put(index(indices), (short)s);
-        return this;
-    }
-    @Override public UShortIndexer put(long[] indices, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            put(index(indices) + n, (short)s[offset + n]);
+            put(i * strides[0] + n, (short) s[offset + n]);
         }
         return this;
     }
 
-    @Override public void release() { pointer = null; }
+    @Override
+    public UShortIndexer put(long i, long j, int s) {
+        put(i * strides[0] + j, (short) s);
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, long j, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            put(i * strides[0] + j * strides[1] + n, (short) s[offset + n]);
+        }
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, long j, long k, int s) {
+        put(i * strides[0] + j * strides[1] + k, (short) s);
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long[] indices, int s) {
+        put(index(indices), (short) s);
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long[] indices, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            put(index(indices) + n, (short) s[offset + n]);
+        }
+        return this;
+    }
+
+    @Override
+    public void release() {
+        pointer = null;
+    }
 }

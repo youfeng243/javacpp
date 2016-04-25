@@ -37,10 +37,11 @@ public class ShortPointer extends Pointer {
      * @param array the array to copy
      * @see #put(short[])
      */
-    public ShortPointer(short ... array) {
+    public ShortPointer(short... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -58,6 +59,7 @@ public class ShortPointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code short} array of the given size.
      *
@@ -70,31 +72,65 @@ public class ShortPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public ShortPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public ShortPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public ShortPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public ShortPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public ShortPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public ShortPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public ShortPointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public ShortPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public ShortPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public ShortPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** @return {@code get(0)} */
-    public short get() { return get(0); }
-    /** @return the i-th {@code short} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public short get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code short} value of a native array
+     */
     public native short get(long i);
-    /** @return {@code put(0, s)} */
-    public ShortPointer put(short s) { return put(0, s); }
+
+    /**
+     * @return {@code put(0, s)}
+     */
+    public ShortPointer put(short s) {
+        return put(0, s);
+    }
+
     /**
      * Copies the {@code short} value to the i-th element of a native array.
      *
@@ -104,31 +140,45 @@ public class ShortPointer extends Pointer {
      */
     public native ShortPointer put(long i, short s);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public ShortPointer get(short[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public ShortPointer put(short ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public ShortPointer get(short[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public ShortPointer put(short... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native ShortPointer get(short[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native ShortPointer put(short[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asShortBuffer()} */
-    @Override public final ShortBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asShortBuffer()}
+     */
+    @Override
+    public final ShortBuffer asBuffer() {
         return asByteBuffer().asShortBuffer();
     }
 }

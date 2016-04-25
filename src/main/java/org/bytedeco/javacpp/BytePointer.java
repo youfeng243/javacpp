@@ -24,6 +24,7 @@ package org.bytedeco.javacpp;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+
 import org.bytedeco.javacpp.annotation.Cast;
 
 /**
@@ -37,7 +38,7 @@ public class BytePointer extends Pointer {
      * Allocates enough memory for the encoded string and actually encodes it
      * in the named charset before copying it.
      *
-     * @param s the String to encode and copy
+     * @param s           the String to encode and copy
      * @param charsetName the charset in which the bytes are encoded
      * @throws UnsupportedEncodingException
      * @see #putString(String, String)
@@ -47,6 +48,7 @@ public class BytePointer extends Pointer {
         this(s.getBytes(charsetName).length + 1);
         putString(s, charsetName);
     }
+
     /**
      * Allocates enough memory for the encoded string and actually encodes it
      * in the platform's default charset before copying it.
@@ -55,19 +57,21 @@ public class BytePointer extends Pointer {
      * @see #putString(String)
      */
     public BytePointer(String s) {
-        this(s.getBytes().length+1);
+        this(s.getBytes().length + 1);
         putString(s);
     }
+
     /**
      * Allocates enough memory for the array and copies it.
      *
      * @param array the array to copy
      * @see #put(byte[])
      */
-    public BytePointer(byte ... array) {
+    public BytePointer(byte... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -85,6 +89,7 @@ public class BytePointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code signed char} array of the given size.
      *
@@ -97,35 +102,59 @@ public class BytePointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public BytePointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public BytePointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public BytePointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public BytePointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public BytePointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public BytePointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public BytePointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public BytePointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public BytePointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public BytePointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** Returns the bytes, assuming a null-terminated string if {@code limit <= position}. */
+    /**
+     * Returns the bytes, assuming a null-terminated string if {@code limit <= position}.
+     */
     public byte[] getStringBytes() {
         long size = limit - position;
         if (size <= 0) {
             size = strlen(this);
         }
-        byte[] array = new byte[(int)Math.min(size, Integer.MAX_VALUE)];
+        byte[] array = new byte[(int) Math.min(size, Integer.MAX_VALUE)];
         get(array);
         return array;
     }
+
     /**
      * Decodes the native bytes assuming they are encoded in the named charset.
      * Assumes a null-terminated string if {@code limit <= position}.
@@ -138,6 +167,7 @@ public class BytePointer extends Pointer {
             throws UnsupportedEncodingException {
         return new String(getStringBytes(), charsetName);
     }
+
     /**
      * Decodes the native bytes assuming they are encoded in the platform's default charset.
      * Assumes a null-terminated string if {@code limit <= position}.
@@ -153,7 +183,7 @@ public class BytePointer extends Pointer {
      * including a terminating null byte.
      * Sets the limit to just before the terminating null byte.
      *
-     * @param s the String to encode and copy
+     * @param s           the String to encode and copy
      * @param charsetName the charset in which to encode the bytes
      * @return this
      * @throws UnsupportedEncodingException
@@ -163,8 +193,9 @@ public class BytePointer extends Pointer {
     public BytePointer putString(String s, String charsetName)
             throws UnsupportedEncodingException {
         byte[] bytes = s.getBytes(charsetName);
-        return put(bytes).put(bytes.length, (byte)0).limit(bytes.length);
+        return put(bytes).put(bytes.length, (byte) 0).limit(bytes.length);
     }
+
     /**
      * Encodes the String into the platform's default charset and copies it in
      * native memory, including a terminating null byte.
@@ -177,15 +208,28 @@ public class BytePointer extends Pointer {
      */
     public BytePointer putString(String s) {
         byte[] bytes = s.getBytes();
-        return put(bytes).put(bytes.length, (byte)0).limit(bytes.length);
+        return put(bytes).put(bytes.length, (byte) 0).limit(bytes.length);
     }
 
-    /** @return {@code get(0)} */
-    public byte get() { return get(0); }
-    /** @return the i-th {@code byte} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public byte get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code byte} value of a native array
+     */
     public native byte get(long i);
-    /** @return {@code put(0, b)} */
-    public BytePointer put(byte b) { return put(0, b); }
+
+    /**
+     * @return {@code put(0, b)}
+     */
+    public BytePointer put(byte b) {
+        return put(0, b);
+    }
+
     /**
      * Copies the {@code byte} value to the i-th element of a native array.
      *
@@ -195,49 +239,107 @@ public class BytePointer extends Pointer {
      */
     public native BytePointer put(long i, byte b);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public BytePointer get(byte[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public BytePointer put(byte ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public BytePointer get(byte[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public BytePointer put(byte... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native BytePointer get(byte[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native BytePointer put(byte[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer()} */
-    @Override public final ByteBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer()}
+     */
+    @Override
+    public final ByteBuffer asBuffer() {
         return asByteBuffer();
     }
 
-    public static native @Cast("char*") BytePointer strcat(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src);
-    public static native @Cast("char*") BytePointer strchr(@Cast("char*") BytePointer str, int ch);
+    public static native
+    @Cast("char*")
+    BytePointer strcat(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src);
+
+    public static native
+    @Cast("char*")
+    BytePointer strchr(@Cast("char*") BytePointer str, int ch);
+
     public static native int strcmp(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
+
     public static native int strcoll(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
-    public static native @Cast("char*") BytePointer strcpy(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src);
-    public static native @Cast("size_t") long strcspn(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
-    public static native @Cast("char*") BytePointer strerror(int errnum);
-    public static native @Cast("size_t") long strlen(@Cast("char*") BytePointer str);
-    public static native @Cast("char*") BytePointer strncat(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
+
+    public static native
+    @Cast("char*")
+    BytePointer strcpy(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src);
+
+    public static native
+    @Cast("size_t")
+    long strcspn(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
+
+    public static native
+    @Cast("char*")
+    BytePointer strerror(int errnum);
+
+    public static native
+    @Cast("size_t")
+    long strlen(@Cast("char*") BytePointer str);
+
+    public static native
+    @Cast("char*")
+    BytePointer strncat(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
+
     public static native int strncmp(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2, @Cast("size_t") long n);
-    public static native @Cast("char*") BytePointer strncpy(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
-    public static native @Cast("char*") BytePointer strpbrk(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
-    public static native @Cast("char*") BytePointer strrchr(@Cast("char*") BytePointer str, int ch);
-    public static native @Cast("size_t") long strspn(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
-    public static native @Cast("char*") BytePointer strstr(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
-    public static native @Cast("char*") BytePointer strtok(@Cast("char*") BytePointer str, @Cast("char*") BytePointer delim);
-    public static native @Cast("size_t") long strxfrm (@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
+
+    public static native
+    @Cast("char*")
+    BytePointer strncpy(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
+
+    public static native
+    @Cast("char*")
+    BytePointer strpbrk(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
+
+    public static native
+    @Cast("char*")
+    BytePointer strrchr(@Cast("char*") BytePointer str, int ch);
+
+    public static native
+    @Cast("size_t")
+    long strspn(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
+
+    public static native
+    @Cast("char*")
+    BytePointer strstr(@Cast("char*") BytePointer str1, @Cast("char*") BytePointer str2);
+
+    public static native
+    @Cast("char*")
+    BytePointer strtok(@Cast("char*") BytePointer str, @Cast("char*") BytePointer delim);
+
+    public static native
+    @Cast("size_t")
+    long strxfrm(@Cast("char*") BytePointer dst, @Cast("char*") BytePointer src, @Cast("size_t") long n);
 }

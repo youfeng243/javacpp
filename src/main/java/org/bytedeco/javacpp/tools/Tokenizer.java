@@ -33,16 +33,17 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 /**
- *
  * @author Samuel Audet
  */
 class Tokenizer implements Closeable {
     Tokenizer(Reader reader) {
         this.reader = reader;
     }
+
     Tokenizer(String string) {
         this.reader = new StringReader(string);
     }
+
     Tokenizer(File file) throws FileNotFoundException {
         this.file = file;
         this.reader = new BufferedReader(new FileReader(file));
@@ -54,7 +55,8 @@ class Tokenizer implements Closeable {
     int lastChar = -1, lineNumber = 1;
     StringBuilder buffer = new StringBuilder();
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         reader.close();
     }
 
@@ -70,7 +72,7 @@ class Tokenizer implements Closeable {
             int c2 = c == '\r' ? reader.read() : -1;
             if (lineSeparator == null) {
                 lineSeparator = c == '\r' && c2 == '\n' ? "\r\n" :
-                                c == '\r' ? "\r" : "\n";
+                        c == '\r' ? "\r" : "\n";
             }
             if (c2 != '\n') {
                 lastChar = c2;
@@ -86,9 +88,9 @@ class Tokenizer implements Closeable {
 
         buffer.setLength(0);
         if (Character.isWhitespace(c)) {
-            buffer.append((char)c);
+            buffer.append((char) c);
             while ((c = readChar()) != -1 && Character.isWhitespace(c)) {
-                buffer.append((char)c);
+                buffer.append((char) c);
             }
         }
         token.file = file;
@@ -98,13 +100,13 @@ class Tokenizer implements Closeable {
         buffer.setLength(0);
         if (Character.isLetter(c) || c == '_') {
             token.type = Token.IDENTIFIER;
-            buffer.append((char)c);
+            buffer.append((char) c);
             while ((c = readChar()) != -1 && (Character.isDigit(c) || Character.isLetter(c) || c == '_')) {
-                buffer.append((char)c);
+                buffer.append((char) c);
             }
             token.value = buffer.toString();
             lastChar = c;
-        } else if (Character.isDigit(c) || c == '.' || c == '-' ||  c == '+') {
+        } else if (Character.isDigit(c) || c == '.' || c == '-' || c == '+') {
             if (c == '.') {
                 int c2 = readChar();
                 if (c2 == '.') {
@@ -122,21 +124,35 @@ class Tokenizer implements Closeable {
                 }
             }
             token.type = c == '.' ? Token.FLOAT : Token.INTEGER;
-            buffer.append((char)c);
+            buffer.append((char) c);
             int prevc = 0;
             boolean exp = false, large = false, unsigned = false, hex = false;
             while ((c = readChar()) != -1 && (Character.isDigit(c) || c == '.' || c == '-' || c == '+' ||
-                   (c >= 'a' && c <= 'f') || c == 'l' || c == 'u' || c == 'x' ||
-                   (c >= 'A' && c <= 'F') || c == 'L' || c == 'U' || c == 'X')) {
+                    (c >= 'a' && c <= 'f') || c == 'l' || c == 'u' || c == 'x' ||
+                    (c >= 'A' && c <= 'F') || c == 'L' || c == 'U' || c == 'X')) {
                 switch (c) {
-                    case '.': token.type = Token.FLOAT;  break;
-                    case 'e': case 'E': exp      = true; break;
-                    case 'l': case 'L': large    = true; break;
-                    case 'u': case 'U': unsigned = true; break;
-                    case 'x': case 'X': hex      = true; break;
+                    case '.':
+                        token.type = Token.FLOAT;
+                        break;
+                    case 'e':
+                    case 'E':
+                        exp = true;
+                        break;
+                    case 'l':
+                    case 'L':
+                        large = true;
+                        break;
+                    case 'u':
+                    case 'U':
+                        unsigned = true;
+                        break;
+                    case 'x':
+                    case 'X':
+                        hex = true;
+                        break;
                 }
                 if (c != 'l' && c != 'L' && c != 'u' && c != 'U') {
-                    buffer.append((char)c);
+                    buffer.append((char) c);
                 }
                 prevc = c;
             }
@@ -158,10 +174,10 @@ class Tokenizer implements Closeable {
             token.type = Token.INTEGER;
             buffer.append('\'');
             while ((c = readChar()) != -1 && c != '\'') {
-                buffer.append((char)c);
+                buffer.append((char) c);
                 if (c == '\\') {
                     c = readChar();
-                    buffer.append((char)c);
+                    buffer.append((char) c);
                 }
             }
             buffer.append('\'');
@@ -170,10 +186,10 @@ class Tokenizer implements Closeable {
             token.type = Token.STRING;
             buffer.append('"');
             while ((c = readChar()) != -1 && c != '"') {
-                buffer.append((char)c);
+                buffer.append((char) c);
                 if (c == '\\') {
                     c = readChar();
-                    buffer.append((char)c);
+                    buffer.append((char) c);
                 }
             }
             buffer.append('"');
@@ -185,7 +201,7 @@ class Tokenizer implements Closeable {
                 buffer.append('/').append('/');
                 int prevc = 0;
                 while ((c = readChar()) != -1 && (prevc == '\\' || c != '\n')) {
-                    buffer.append((char)c);
+                    buffer.append((char) c);
                     prevc = c;
                 }
                 token.value = buffer.toString();
@@ -195,7 +211,7 @@ class Tokenizer implements Closeable {
                 buffer.append('/').append('*');
                 int prevc = 0;
                 while ((c = readChar()) != -1 && (prevc != '*' || c != '/')) {
-                    buffer.append((char)c);
+                    buffer.append((char) c);
                     prevc = c;
                 }
                 buffer.append('/');

@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.bytedeco.javacpp.ClassProperties;
 import org.bytedeco.javacpp.Loader;
 
@@ -55,22 +56,23 @@ import org.bytedeco.javacpp.Loader;
  * - Inherit constructors from helper classes, if possible
  * - etc.
  *
+ * @author Samuel Audet
  * @see Info
  * @see InfoMap
  * @see InfoMapper
- *
- * @author Samuel Audet
  */
 public class Parser {
 
     public Parser(Logger logger, Properties properties) {
         this(logger, properties, null);
     }
+
     public Parser(Logger logger, Properties properties, String lineSeparator) {
         this.logger = logger;
         this.properties = properties;
         this.lineSeparator = lineSeparator;
     }
+
     Parser(Parser p, String text) {
         this.logger = p.logger;
         this.properties = p.properties;
@@ -186,50 +188,50 @@ public class Parser {
                         + "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n"
                         + "    public " + containerType.javaName + "(Pointer p) { super(p); }\n";
                 if (firstType != null && secondType != null) {
-                    String[] firstNames = firstType.javaNames != null ? firstType.javaNames : new String[] {firstType.javaName};
-                    String[] secondNames = secondType.javaNames != null ? secondType.javaNames : new String[] {secondType.javaName};
+                    String[] firstNames = firstType.javaNames != null ? firstType.javaNames : new String[]{firstType.javaName};
+                    String[] secondNames = secondType.javaNames != null ? secondType.javaNames : new String[]{secondType.javaName};
                     String brackets = arrayBrackets + (dim > 0 ? "[]" : "");
                     for (int n = 0; n < firstNames.length || n < secondNames.length; n++) {
                         decl.text += "    public " + containerType.javaName + "(" + firstNames[Math.min(n, firstNames.length - 1)] + brackets + " firstValue, "
-                                                                                  + secondNames[Math.min(n, secondNames.length - 1)] + brackets + " secondValue) "
-                                  +  "{ this(" + (dim > 0 ? "Math.min(firstValue.length, secondValue.length)" : "") + "); put(firstValue, secondValue); }\n";
+                                + secondNames[Math.min(n, secondNames.length - 1)] + brackets + " secondValue) "
+                                + "{ this(" + (dim > 0 ? "Math.min(firstValue.length, secondValue.length)" : "") + "); put(firstValue, secondValue); }\n";
                     }
                 } else if (resizable && firstType == null && secondType == null) {
-                    for (String javaName : valueType.javaNames != null ? valueType.javaNames : new String[] {valueType.javaName}) {
+                    for (String javaName : valueType.javaNames != null ? valueType.javaNames : new String[]{valueType.javaName}) {
                         decl.text += "    public " + containerType.javaName + "(" + javaName + arrayBrackets + " ... array) { this(array.length); put(array); }\n";
                     }
                 }
                 decl.text += "    public " + containerType.javaName + "()       { allocate();  }\n" + (!resizable ? ""
-                           : "    public " + containerType.javaName + "(long n) { allocate(n); }\n")
-                           + "    private native void allocate();\n"                                + (!resizable ? ""
-                           : "    private native void allocate(@Cast(\"size_t\") long n);\n")
-                           + "    public native @Name(\"operator=\") @ByRef " + containerType.javaName + " put(@ByRef " + containerType.javaName + " x);\n\n";
+                        : "    public " + containerType.javaName + "(long n) { allocate(n); }\n")
+                        + "    private native void allocate();\n" + (!resizable ? ""
+                        : "    private native void allocate(@Cast(\"size_t\") long n);\n")
+                        + "    public native @Name(\"operator=\") @ByRef " + containerType.javaName + " put(@ByRef " + containerType.javaName + " x);\n\n";
 
                 for (int i = 0; i < dim; i++) {
-                    String indexAnnotation = i > 0 ? ("@Index" + (i > 1 ? "(" + i + ") " : " " )) : "";
+                    String indexAnnotation = i > 0 ? ("@Index" + (i > 1 ? "(" + i + ") " : " ")) : "";
                     String indices = "", separator = "";
                     for (int j = 0; j < i; j++) {
-                        indices += separator + indexType.annotations + indexType.javaName + " " + (char)('i' + j);
+                        indices += separator + indexType.annotations + indexType.javaName + " " + (char) ('i' + j);
                         separator = ", ";
                     }
 
-                    decl.text += "    public native " + indexAnnotation + "long size(" + indices + ");\n"  + (!resizable ? ""
-                               : "    public native " + indexAnnotation + "void resize(" + indices + separator + "@Cast(\"size_t\") long n);\n");
+                    decl.text += "    public native " + indexAnnotation + "long size(" + indices + ");\n" + (!resizable ? ""
+                            : "    public native " + indexAnnotation + "void resize(" + indices + separator + "@Cast(\"size_t\") long n);\n");
                 }
 
                 String params = "", separator = "";
                 for (int i = 0; i < dim; i++) {
-                    params += separator + indexType.annotations + indexType.javaName + " " + (char)('i' + i);
+                    params += separator + indexType.annotations + indexType.javaName + " " + (char) ('i' + i);
                     separator = ", ";
                 }
 
                 if (firstType != null && secondType != null) {
                     String indexAnnotation = dim == 0 ? "@MemberGetter " : "@Index" + (dim > 1 ? "(" + dim + ") " : " ");
                     decl.text += "\n"
-                              +  "    " + indexAnnotation + "public native " + firstType.annotations + firstType.javaName + " first(" + params + ");"
-                              +  " public native " + containerType.javaName + " first(" + params + separator + firstType.javaName + " first);\n"
-                              +  "    " + indexAnnotation + "public native " + secondType.annotations + secondType.javaName + " second(" + params + "); "
-                              +  " public native " + containerType.javaName + " second(" + params + separator + secondType.javaName + " second);\n";
+                            + "    " + indexAnnotation + "public native " + firstType.annotations + firstType.javaName + " first(" + params + ");"
+                            + " public native " + containerType.javaName + " first(" + params + separator + firstType.javaName + " first);\n"
+                            + "    " + indexAnnotation + "public native " + secondType.annotations + secondType.javaName + " second(" + params + "); "
+                            + " public native " + containerType.javaName + " second(" + params + separator + secondType.javaName + " second);\n";
                     for (int i = 1; firstType.javaNames != null && i < firstType.javaNames.length; i++) {
                         decl.text += "    @MemberSetter @Index public native " + containerType.javaName + " first(" + params + separator + firstType.annotations + firstType.javaNames[i] + " first);\n";
                     }
@@ -238,68 +240,68 @@ public class Parser {
                     }
                 } else {
                     decl.text += "\n"
-                              +  "    @Index public native " + valueType.annotations + valueType.javaName + " get(" + params + ");\n"
-                              +  "    public native " + containerType.javaName + " put(" + params + separator + valueType.javaName + " value);\n";
+                            + "    @Index public native " + valueType.annotations + valueType.javaName + " get(" + params + ");\n"
+                            + "    public native " + containerType.javaName + " put(" + params + separator + valueType.javaName + " value);\n";
                     for (int i = 1; valueType.javaNames != null && i < valueType.javaNames.length; i++) {
                         decl.text += "    @ValueSetter @Index public native " + containerType.javaName + " put(" + params + separator + valueType.annotations + valueType.javaNames[i] + " value);\n";
                     }
                     if (containerType.arguments.length > 1 && containerType.arguments[1].javaName.length() > 0) {
                         decl.text += "\n"
-                                  +  "    public native @ByVal Iterator begin();\n"
-                                  +  "    public native @ByVal Iterator end();\n"
-                                  +  "    @NoOffset @Name(\"iterator\") public static class Iterator extends Pointer {\n"
-                                  +  "        public Iterator(Pointer p) { super(p); }\n"
-                                  +  "        public Iterator() { }\n\n"
+                                + "    public native @ByVal Iterator begin();\n"
+                                + "    public native @ByVal Iterator end();\n"
+                                + "    @NoOffset @Name(\"iterator\") public static class Iterator extends Pointer {\n"
+                                + "        public Iterator(Pointer p) { super(p); }\n"
+                                + "        public Iterator() { }\n\n"
 
-                                  +  "        public native @Name(\"operator++\") @ByRef Iterator increment();\n"
-                                  +  "        public native @Name(\"operator==\") boolean equals(@ByRef Iterator it);\n"
-                                  +  "        public native @Name(\"operator*().first\") @MemberGetter " + indexType.annotations + indexType.javaName + " first();\n"
-                                  +  "        public native @Name(\"operator*().second\") @MemberGetter " + valueType.annotations + valueType.javaName + " second();\n"
+                                + "        public native @Name(\"operator++\") @ByRef Iterator increment();\n"
+                                + "        public native @Name(\"operator==\") boolean equals(@ByRef Iterator it);\n"
+                                + "        public native @Name(\"operator*().first\") @MemberGetter " + indexType.annotations + indexType.javaName + " first();\n"
+                                + "        public native @Name(\"operator*().second\") @MemberGetter " + valueType.annotations + valueType.javaName + " second();\n"
 //                                  +  "        public native @Name(\"operator*\") " + valueType.annotations + valueType.javaName + " get();\n"
-                                  +  "    }\n";
+                                + "    }\n";
                     }
                 }
 
                 if (firstType != null && secondType != null) {
-                    String[] firstNames = firstType.javaNames != null ? firstType.javaNames : new String[] {firstType.javaName};
-                    String[] secondNames = secondType.javaNames != null ? secondType.javaNames : new String[] {secondType.javaName};
+                    String[] firstNames = firstType.javaNames != null ? firstType.javaNames : new String[]{firstType.javaName};
+                    String[] secondNames = secondType.javaNames != null ? secondType.javaNames : new String[]{secondType.javaName};
                     String brackets = arrayBrackets + (dim > 0 ? "[]" : "");
                     for (int n = 0; n < firstNames.length || n < secondNames.length; n++) {
                         decl.text += "\n"
-                                  +  "    public " + containerType.javaName + " put(" + firstNames[Math.min(n, firstNames.length - 1)] + brackets + " firstValue, "
-                                                                                     + secondNames[Math.min(n, secondNames.length - 1)] + brackets + " secondValue) {\n";
+                                + "    public " + containerType.javaName + " put(" + firstNames[Math.min(n, firstNames.length - 1)] + brackets + " firstValue, "
+                                + secondNames[Math.min(n, secondNames.length - 1)] + brackets + " secondValue) {\n";
                         String indent = "        ", indices = "", args = "";
                         separator = "";
                         for (int i = 0; i < dim; i++) {
-                            char c = (char)('i' + i);
+                            char c = (char) ('i' + i);
                             decl.text +=
                                     indent + "for (int " + c + " = 0; " + c + " < firstValue" + indices + ".length && "
-                                                                        + c + " < secondValue" + indices + ".length; " + c + "++) {\n";
+                                            + c + " < secondValue" + indices + ".length; " + c + "++) {\n";
                             indent += "    ";
                             indices += "[" + c + "]";
                             args += separator + c;
                             separator = ", ";
                         }
                         decl.text += indent + "first(" + args + separator + "firstValue" + indices + ");\n"
-                                  +  indent + "second(" + args + separator + "secondValue" + indices + ");\n";
+                                + indent + "second(" + args + separator + "secondValue" + indices + ");\n";
                         for (int i = 0; i < dim; i++) {
                             indent = indent.substring(4);
                             decl.text += indent + "}\n";
                         }
                         decl.text += "        return this;\n"
-                                  +  "    }\n";
+                                + "    }\n";
                     }
                 } else if (resizable && firstType == null && secondType == null) {
-                    for (String javaName : valueType.javaNames != null ? valueType.javaNames : new String[] {valueType.javaName}) {
+                    for (String javaName : valueType.javaNames != null ? valueType.javaNames : new String[]{valueType.javaName}) {
                         decl.text += "\n"
-                                  +  "    public " + containerType.javaName + " put(" + javaName + arrayBrackets + " ... array) {\n";
+                                + "    public " + containerType.javaName + " put(" + javaName + arrayBrackets + " ... array) {\n";
                         String indent = "        ", indices = "", args = "";
                         separator = "";
                         for (int i = 0; i < dim; i++) {
-                            char c = (char)('i' + i);
+                            char c = (char) ('i' + i);
                             decl.text +=
                                     indent + "if (size(" + args + ") != array" + indices + ".length) { resize(" + args + separator + "array" + indices + ".length); }\n" +
-                                    indent + "for (int " + c + " = 0; " + c + " < array" + indices + ".length; " + c + "++) {\n";
+                                            indent + "for (int " + c + " = 0; " + c + " < array" + indices + ".length; " + c + "++) {\n";
                             indent += "    ";
                             indices += "[" + c + "]";
                             args += separator + c;
@@ -311,7 +313,7 @@ public class Parser {
                             decl.text += indent + "}\n";
                         }
                         decl.text += "        return this;\n"
-                                  +  "    }\n";
+                                + "    }\n";
                     }
                 }
                 decl.text += "}\n";
@@ -472,9 +474,9 @@ public class Parser {
             } else if (token.match(Token.VIRTUAL)) {
                 type.virtual = true;
             } else if (token.match(Token.ENUM, Token.EXPLICIT, Token.EXTERN, Token.INLINE, Token.CLASS, Token.INTERFACE, Token.__INTERFACE,
-                                   Token.NAMESPACE, Token.STRUCT, Token.UNION, Token.TYPEDEF, Token.TYPENAME, Token.USING)) {
+                    Token.NAMESPACE, Token.STRUCT, Token.UNION, Token.TYPEDEF, Token.TYPENAME, Token.USING)) {
                 continue;
-            } else if (token.match((Object[])infoMap.getFirst("basic/types").cppTypes) && (type.cppName.length() == 0 || type.simple)) {
+            } else if (token.match((Object[]) infoMap.getFirst("basic/types").cppTypes) && (type.cppName.length() == 0 || type.simple)) {
                 type.cppName += token.value + " ";
                 type.simple = true;
             } else if (token.match(Token.IDENTIFIER)) {
@@ -662,7 +664,7 @@ public class Parser {
     }
 
     Declarator declarator(Context context, String defaultName, int infoNumber, boolean useDefaults,
-            int varNumber, boolean arrayAsPointer, boolean pointerAsArray) throws ParserException {
+                          int varNumber, boolean arrayAsPointer, boolean pointerAsArray) throws ParserException {
         boolean typedef = tokens.get().match(Token.TYPEDEF);
         boolean using = tokens.get().match(Token.USING);
         Declarator dcl = new Declarator();
@@ -674,9 +676,9 @@ public class Parser {
         // pick the requested identifier out of the statement in the case of multiple variable declaractions
         int count = 0, number = 0;
         for (Token token = tokens.get(); number < varNumber && !token.match(Token.EOF); token = tokens.next()) {
-            if (token.match('(','[','{')) {
+            if (token.match('(', '[', '{')) {
                 count++;
-            } else if (token.match(')',']','}')) {
+            } else if (token.match(')', ']', '}')) {
                 count--;
             } else if (count > 0) {
                 continue;
@@ -864,7 +866,7 @@ public class Parser {
                     dimCast += "[" + dims[i] + "]";
                 }
             }
-            
+
             if (!dimCast.isEmpty()) {
                 if (dims[0] != -1) {
                     // Annotate with the first dimension's value
@@ -1090,12 +1092,12 @@ public class Parser {
                         "    static { Loader.load(); }\n" +
                         "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
                         "    public    " + functionType + "(Pointer p) { super(p); }\n" +
-                    (groupInfo != null ? "" :
-                        "    protected " + functionType + "() { allocate(); }\n" +
-                        "    private native void allocate();\n") +
+                        (groupInfo != null ? "" :
+                                "    protected " + functionType + "() { allocate(); }\n" +
+                                        "    private native void allocate();\n") +
                         "    public native " + type.annotations + type.javaName + " call" +
-                    (groupInfo != null ? "(" + groupInfo.pointerTypes[0] + " o" + (dcl.parameters.list.charAt(1) == ')' ?
-                            ")" : ", " + dcl.parameters.list.substring(1)) : dcl.parameters.list) + ";\n" +
+                        (groupInfo != null ? "(" + groupInfo.pointerTypes[0] + " o" + (dcl.parameters.list.charAt(1) == ')' ?
+                                ")" : ", " + dcl.parameters.list.substring(1)) : dcl.parameters.list) + ";\n" +
                         "}\n";
                 definition.signature = functionType;
                 definition.declarator = new Declarator();
@@ -1129,11 +1131,15 @@ public class Parser {
         return dcl;
     }
 
-    /** Documentation tags, where we keep only the ones that could be compatible between Javadoc and Doxygen. */
+    /**
+     * Documentation tags, where we keep only the ones that could be compatible between Javadoc and Doxygen.
+     */
     String[] docTags = {"author", "deprecated", "exception", "param", "return", "see", "since", "throws", "version",
         /* "code", "docRoot", "inheritDoc", "link", "linkplain", "literal", "serial", "serialData", "serialField", "value" */};
 
-    /** Tries to adapt a Doxygen-style documentation comment to Javadoc-style. */
+    /**
+     * Tries to adapt a Doxygen-style documentation comment to Javadoc-style.
+     */
     String commentDoc(String s, int startIndex) {
         if (startIndex < 0 || startIndex > s.length()) {
             return s;
@@ -1216,8 +1222,10 @@ public class Parser {
         return sb.toString();
     }
 
-    /** Converts Doxygen-like documentation comments placed before identifiers to Javadoc-style.
-     *  Also leaves as is non-documentation comments. */
+    /**
+     * Converts Doxygen-like documentation comments placed before identifiers to Javadoc-style.
+     * Also leaves as is non-documentation comments.
+     */
     String commentBefore() throws ParserException {
         String comment = "";
         tokens.raw = true;
@@ -1261,7 +1269,9 @@ public class Parser {
         return commentDoc(comment, startDoc);
     }
 
-    /** Converts Doxygen-like documentation comments placed after identifiers to Javadoc-style. */
+    /**
+     * Converts Doxygen-like documentation comments placed after identifiers to Javadoc-style.
+     */
     String commentAfter() throws ParserException {
         String comment = "";
         tokens.raw = true;
@@ -1641,7 +1651,7 @@ public class Parser {
             // add @Virtual annotation on user request only, inherited through context
             if (type.virtual && context.virtualize) {
                 modifiers = "@Virtual" + (decl.abstractMember ? "(true) " : " ")
-                          + (context.inaccessible ? "protected native " : "public native ");
+                        + (context.inaccessible ? "protected native " : "public native ");
             }
 
             // compose the text of the declaration with the info we got up until this point
@@ -1651,7 +1661,7 @@ public class Parser {
             }
             if (type.constructor && params != null) {
                 decl.text += "public " + context.shorten(context.javaName) + dcl.parameters.list + " { super((Pointer)null); allocate" + params.names + "; }\n" +
-                             "private native void allocate" + dcl.parameters.list + ";\n";
+                        "private native void allocate" + dcl.parameters.list + ";\n";
             } else {
                 decl.text += modifiers + type.annotations + context.shorten(type.javaName) + " " + dcl.javaName + dcl.parameters.list + ";\n";
             }
@@ -1753,7 +1763,7 @@ public class Parser {
                     if (i > 0) {
                         indices += ", ";
                     }
-                    indices += "int " + (char)('i' + i);
+                    indices += "int " + (char) ('i' + i);
                 }
                 if (context.namespace != null && context.javaName == null) {
                     decl.text += "@Namespace(\"" + context.namespace + "\") ";
@@ -1768,7 +1778,7 @@ public class Parser {
                     decl.text += "@MemberGetter ";
                 }
                 decl.text += modifiers + dcl.type.annotations.replace("@ByVal ", "@ByRef ")
-                          + dcl.type.javaName + " " + javaName + "(" + indices + ");";
+                        + dcl.type.javaName + " " + javaName + "(" + indices + ");";
                 if (!dcl.type.constValue) {
                     if (indices.length() > 0) {
                         indices += ", ";
@@ -1794,7 +1804,7 @@ public class Parser {
                     if (i > 0) {
                         indices += ", ";
                     }
-                    indices += "int " + (char)('i' + i);
+                    indices += "int " + (char) ('i' + i);
                 }
                 if (context.namespace != null && context.javaName == null) {
                     decl.text += "@Namespace(\"" + context.namespace + "\") ";
@@ -1806,7 +1816,7 @@ public class Parser {
                     javaName = metadcl.javaName + "_" + dcl.javaName;
                 }
                 decl.text += "@MemberGetter " + modifiers + dcl.type.annotations.replace("@ByVal ", "@ByRef ")
-                          + dcl.type.javaName + " " + javaName + "(" + indices + ");\n";
+                        + dcl.type.javaName + " " + javaName + "(" + indices + ");\n";
             }
             decl.signature = dcl.signature;
             if (info != null && info.javaText != null) {
@@ -1860,7 +1870,7 @@ public class Parser {
             Token first = tokens.next();
             boolean hasArgs = first.spacing.length() == 0 && first.match('(');
             List<Info> infoList = infoMap.get(macroName);
-            for (Info info : infoList.size() > 0 ? infoList : Arrays.asList(new Info[] { null })) {
+            for (Info info : infoList.size() > 0 ? infoList : Arrays.asList(new Info[]{null})) {
                 if (info != null && info.skip) {
                     break;
                 } else if ((info == null && (hasArgs || beginIndex + 1 == endIndex))
@@ -1937,11 +1947,17 @@ public class Parser {
                     boolean translate = true;
                     for (Token token = tokens.get(); tokens.index < lastIndex; token = tokens.next()) {
                         if (token.match(Token.STRING)) {
-                            type = "String"; cat = " + "; break;
+                            type = "String";
+                            cat = " + ";
+                            break;
                         } else if (token.match(Token.FLOAT)) {
-                            type = "double"; cat = ""; break;
+                            type = "double";
+                            cat = "";
+                            break;
                         } else if (token.match(Token.INTEGER) && token.value.endsWith("L")) {
-                            type = "long"; cat = ""; break;
+                            type = "long";
+                            cat = "";
+                            break;
                         } else if ((prevToken.match(Token.IDENTIFIER, '>') && token.match('(')) || token.match('{', '}')) {
                             translate = false;
                         }
@@ -2041,11 +2057,11 @@ public class Parser {
                     decl.text += "@Namespace(\"" + context.namespace + "\") ";
                 }
                 decl.text += "@Opaque public static class " + dcl.javaName + " extends Pointer {\n" +
-                             "    /** Empty constructor. Calls {@code super((Pointer)null)}. */\n" +
-                             "    public " + dcl.javaName + "() { super((Pointer)null); }\n" +
-                             "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
-                             "    public " + dcl.javaName + "(Pointer p) { super(p); }\n" +
-                             "}";
+                        "    /** Empty constructor. Calls {@code super((Pointer)null)}. */\n" +
+                        "    public " + dcl.javaName + "() { super((Pointer)null); }\n" +
+                        "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
+                        "    public " + dcl.javaName + "(Pointer p) { super(p); }\n" +
+                        "}";
             }
         } else {
             // point back to original type
@@ -2072,7 +2088,7 @@ public class Parser {
                     info.cppNames(defName, s).cppTypes(s);
                 }
                 if (info.valueTypes == null && dcl.indirections > 0) {
-                    info.valueTypes(info.pointerTypes != null ? info.pointerTypes : new String[] {typeName});
+                    info.valueTypes(info.pointerTypes != null ? info.pointerTypes : new String[]{typeName});
                     info.pointerTypes("PointerPointer");
                 } else if (info.pointerTypes == null) {
                     info.pointerTypes(typeName);
@@ -2265,11 +2281,11 @@ public class Parser {
                 decl.text += "@Namespace(\"" + context.namespace + "\") ";
             }
             decl.text += "@Opaque public static class " + name + " extends " + base.javaName + " {\n" +
-                         "    /** Empty constructor. Calls {@code super((Pointer)null)}. */\n" +
-                         "    public " + name + "() { super((Pointer)null); }\n" +
-                         "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
-                         "    public " + name + "(Pointer p) { super(p); }\n" +
-                         "}";
+                    "    /** Empty constructor. Calls {@code super((Pointer)null)}. */\n" +
+                    "    public " + name + "() { super((Pointer)null); }\n" +
+                    "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
+                    "    public " + name + "(Pointer p) { super(p); }\n" +
+                    "}";
             decl.type = type;
             decl.incomplete = true;
             String comment = commentAfter();
@@ -2335,32 +2351,32 @@ public class Parser {
                 base.javaName = info.base;
             }
             decl.text += modifiers + "class " + name + " extends " + base.javaName + " {\n" +
-                         "    static { Loader.load(); }\n";
+                    "    static { Loader.load(); }\n";
 
             if (implicitConstructor && (!abstractClass || ctx.virtualize)) {
                 decl.text += "    /** Default native constructor. */\n" +
-                             "    public " + name + "() { super((Pointer)null); allocate(); }\n" +
-                             "    /** Native array allocator. Access with {@link Pointer#position(long)}. */\n" +
-                             "    public " + name + "(long size) { super((Pointer)null); allocateArray(size); }\n" +
-                             "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
-                             "    public " + name + "(Pointer p) { super(p); }\n" +
-                             "    private native void allocate();\n" +
-                             "    private native void allocateArray(long size);\n" +
-                             "    @Override public " + name + " position(long position) {\n" +
-                             "        return (" + name + ")super.position(position);\n" +
-                             "    }\n";
+                        "    public " + name + "() { super((Pointer)null); allocate(); }\n" +
+                        "    /** Native array allocator. Access with {@link Pointer#position(long)}. */\n" +
+                        "    public " + name + "(long size) { super((Pointer)null); allocateArray(size); }\n" +
+                        "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
+                        "    public " + name + "(Pointer p) { super(p); }\n" +
+                        "    private native void allocate();\n" +
+                        "    private native void allocateArray(long size);\n" +
+                        "    @Override public " + name + " position(long position) {\n" +
+                        "        return (" + name + ")super.position(position);\n" +
+                        "    }\n";
             } else {
                 if (!pointerConstructor) {
                     decl.text += "    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */\n" +
-                                 "    public " + name + "(Pointer p) { super(p); }\n";
+                            "    public " + name + "(Pointer p) { super(p); }\n";
                 }
                 if (defaultConstructor && (!abstractClass || ctx.virtualize) && !longConstructor) {
                     decl.text += "    /** Native array allocator. Access with {@link Pointer#position(long)}. */\n" +
-                                 "    public " + name + "(long size) { super((Pointer)null); allocateArray(size); }\n" +
-                                 "    private native void allocateArray(long size);\n" +
-                                 "    @Override public " + name + " position(long position) {\n" +
-                                 "        return (" + name + ")super.position(position);\n" +
-                                 "    }\n";
+                            "    public " + name + "(long size) { super((Pointer)null); allocateArray(size); }\n" +
+                            "    private native void allocateArray(long size);\n" +
+                            "    @Override public " + name + " position(long position) {\n" +
+                            "        return (" + name + ")super.position(position);\n" +
+                            "    }\n";
                 }
             }
             declList.spacing = spacing;
@@ -2693,7 +2709,7 @@ public class Parser {
                         continue;
                     }
                     int count = 0;
-                    for (Map.Entry<String,Type> e : map.entrySet()) {
+                    for (Map.Entry<String, Type> e : map.entrySet()) {
                         if (count < type.arguments.length) {
                             Type t = type.arguments[count++];
                             String s = t.cppName;
@@ -2804,20 +2820,21 @@ public class Parser {
     public File parse(String outputDirectory, String[] classPath, Class cls) throws IOException, ParserException {
         return parse(new File(outputDirectory), classPath, cls);
     }
+
     public File parse(File outputDirectory, String[] classPath, Class cls) throws IOException, ParserException {
         ClassProperties allProperties = Loader.loadProperties(cls, properties, true);
         ClassProperties clsProperties = Loader.loadProperties(cls, properties, false);
-        
+
         // Capture c-includes from "class" and "all" properties
         List<String> cIncludes = new ArrayList<>();
         cIncludes.addAll(clsProperties.get("platform.cinclude"));
         cIncludes.addAll(allProperties.get("platform.cinclude"));
-        
+
         // Capture class includes
         List<String> clsIncludes = new ArrayList<String>();
         clsIncludes.addAll(clsProperties.get("platform.include"));
         clsIncludes.addAll(clsProperties.get("platform.cinclude"));
-        
+
         // Capture all includes
         List<String> allIncludes = new ArrayList<String>();
         allIncludes.addAll(allProperties.get("platform.include"));
@@ -2831,15 +2848,15 @@ public class Parser {
         infoMap = new InfoMap();
         for (Class c : allInherited) {
             try {
-                ((InfoMapper)c.newInstance()).map(infoMap);
-            } catch (ClassCastException |  InstantiationException | IllegalAccessException e) {
+                ((InfoMapper) c.newInstance()).map(infoMap);
+            } catch (ClassCastException | InstantiationException | IllegalAccessException e) {
                 // fail silently as if the interface wasn't implemented
             }
         }
         leafInfoMap = new InfoMap();
         try {
-            ((InfoMapper)cls.newInstance()).map(leafInfoMap);
-        } catch (ClassCastException |  InstantiationException | IllegalAccessException e) {
+            ((InfoMapper) cls.newInstance()).map(leafInfoMap);
+        } catch (ClassCastException | InstantiationException | IllegalAccessException e) {
             // fail silently as if the interface wasn't implemented
         }
         infoMap.putAll(leafInfoMap);
@@ -2860,8 +2877,8 @@ public class Parser {
             }
         }
         text += "import java.nio.*;\n"
-             +  "import org.bytedeco.javacpp.*;\n"
-             +  "import org.bytedeco.javacpp.annotation.*;\n\n";
+                + "import org.bytedeco.javacpp.*;\n"
+                + "import org.bytedeco.javacpp.annotation.*;\n\n";
         for (String s : allTargets) {
             if (!target.equals(s)) {
                 text += "import static " + s + ".*;\n";
@@ -2871,8 +2888,8 @@ public class Parser {
             text += "\n";
         }
         text += "public class " + target.substring(n + 1) + " extends "
-             + (clsHelpers.size() > 0 && clsIncludes.size() > 0 ? clsHelpers.get(0) : cls.getCanonicalName()) + " {\n"
-             + "    static { Loader.load(); }\n";
+                + (clsHelpers.size() > 0 && clsIncludes.size() > 0 ? clsHelpers.get(0) : cls.getCanonicalName()) + " {\n"
+                + "    static { Loader.load(); }\n";
 
         String targetPath = target.replace('.', File.separatorChar);
         File targetFile = new File(outputDirectory, targetPath + ".java");
@@ -2910,10 +2927,11 @@ public class Parser {
 
         final String newline = lineSeparator != null ? lineSeparator : "\n";
         try (Writer out = new FileWriter(targetFile) {
-                 @Override public Writer append(CharSequence text) throws IOException {
-                     return super.append(((String)text).replace("\n", newline).replace("\\u", "\\u005Cu"));
-                 }
-             }) {
+            @Override
+            public Writer append(CharSequence text) throws IOException {
+                return super.append(((String) text).replace("\n", newline).replace("\\u", "\\u005Cu"));
+            }
+        }) {
             out.append(text);
             for (Info info : infoList) {
                 if (info.javaText != null && !info.javaText.startsWith("import")) {

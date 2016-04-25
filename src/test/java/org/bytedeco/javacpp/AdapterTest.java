@@ -23,6 +23,7 @@ package org.bytedeco.javacpp;
 
 import java.io.File;
 import java.nio.IntBuffer;
+
 import org.bytedeco.javacpp.annotation.Cast;
 import org.bytedeco.javacpp.annotation.Platform;
 import org.bytedeco.javacpp.annotation.SharedPtr;
@@ -31,6 +32,7 @@ import org.bytedeco.javacpp.annotation.StdVector;
 import org.bytedeco.javacpp.tools.Builder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,50 +40,84 @@ import static org.junit.Assert.*;
  *
  * @author Samuel Audet
  */
-@Platform(compiler="cpp11", define="SHARED_PTR_NAMESPACE std", include="AdapterTest.h")
+@Platform(compiler = "cpp11", define = "SHARED_PTR_NAMESPACE std", include = "AdapterTest.h")
 public class AdapterTest {
 
-    static native @StdString String testStdString(@StdString String str);
-    static native @StdString BytePointer testStdString(@StdString BytePointer str);
+    static native
+    @StdString
+    String testStdString(@StdString String str);
+
+    static native
+    @StdString
+    BytePointer testStdString(@StdString BytePointer str);
 
     static native String testCharString(String str);
-    static native @Cast("char*") BytePointer testCharString(@Cast("char*") BytePointer str);
+
+    static native
+    @Cast("char*")
+    BytePointer testCharString(@Cast("char*") BytePointer str);
 
     static native CharPointer testShortString(CharPointer str);
 
     static native IntPointer testIntString(IntPointer str);
 
     static class SharedData extends Pointer {
-        SharedData(int data) { allocate(data); }
+        SharedData(int data) {
+            allocate(data);
+        }
+
         native void allocate(int data);
 
-        native int data(); native SharedData data(int data);
+        native int data();
+
+        native SharedData data(int data);
     }
 
-    static native @SharedPtr SharedData createSharedData();
+    static native
+    @SharedPtr
+    SharedData createSharedData();
+
     static native void storeSharedData(@SharedPtr SharedData s);
-    static native @SharedPtr SharedData fetchSharedData();
 
-    static native int constructorCount(); static native void constructorCount(int c);
-    static native int destructorCount(); static native void destructorCount(int c);
+    static native
+    @SharedPtr
+    SharedData fetchSharedData();
 
-    static native @StdVector IntPointer testStdVectorByVal(@StdVector IntPointer v);
-    static native @StdVector IntPointer testStdVectorByRef(@StdVector IntBuffer v);
-    static native @StdVector int[] testStdVectorByPtr(@StdVector int[] v);
+    static native int constructorCount();
 
-    @BeforeClass public static void setUpClass() throws Exception {
+    static native void constructorCount(int c);
+
+    static native int destructorCount();
+
+    static native void destructorCount(int c);
+
+    static native
+    @StdVector
+    IntPointer testStdVectorByVal(@StdVector IntPointer v);
+
+    static native
+    @StdVector
+    IntPointer testStdVectorByRef(@StdVector IntBuffer v);
+
+    static native
+    @StdVector
+    int[] testStdVectorByPtr(@StdVector int[] v);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         Class c = AdapterTest.class;
         Builder builder = new Builder().classesOrPackages(c.getName());
         File[] outputFiles = builder.build();
         Loader.load(c);
     }
 
-    @Test public void testStdString() {
+    @Test
+    public void testStdString() {
         System.out.println("StdString");
 
         byte[] data = new byte[42];
         for (int i = 0; i < data.length; i++) {
-            data[i] = (byte)i;
+            data[i] = (byte) i;
         }
         BytePointer dataPtr1 = new BytePointer(data);
         BytePointer dataPtr2 = testStdString(dataPtr1);
@@ -101,7 +137,8 @@ public class AdapterTest {
         System.gc();
     }
 
-    @Test public void testCharString() {
+    @Test
+    public void testCharString() {
         System.out.println("CharString");
 
         String textStr1 = "This is a normal ASCII string.";
@@ -115,7 +152,8 @@ public class AdapterTest {
         System.gc();
     }
 
-    @Test public void testShortString() {
+    @Test
+    public void testShortString() {
         System.out.println("ShortString");
 
         String textStr = "This is a normal ASCII string.";
@@ -126,7 +164,8 @@ public class AdapterTest {
         System.gc();
     }
 
-    @Test public void testIntString() {
+    @Test
+    public void testIntString() {
         System.out.println("IntString");
 
         String textStr = "This is a normal ASCII string.";
@@ -137,7 +176,8 @@ public class AdapterTest {
         System.gc();
     }
 
-    @Test public void testSharedPtr() {
+    @Test
+    public void testSharedPtr() {
         System.out.println("SharedPtr");
         SharedData sharedData = createSharedData();
         assertEquals(42, sharedData.data());
@@ -154,7 +194,8 @@ public class AdapterTest {
         System.gc();
     }
 
-    @Test public void testStdVector() {
+    @Test
+    public void testStdVector() {
         System.out.println("StdVector");
         int[] arr = {5, 7, 13, 37, 42};
         IntPointer ptr = new IntPointer(arr);

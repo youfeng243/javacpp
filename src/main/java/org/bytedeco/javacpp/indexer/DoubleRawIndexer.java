@@ -31,19 +31,29 @@ import org.bytedeco.javacpp.Pointer;
  * @author Samuel Audet
  */
 public class DoubleRawIndexer extends DoubleIndexer {
-    /** The instance for the raw memory interface. */
+    /**
+     * The instance for the raw memory interface.
+     */
     protected static final Raw RAW = Raw.getInstance();
-    /** The backing pointer. */
+    /**
+     * The backing pointer.
+     */
     protected DoublePointer pointer;
-    /** Base address and number of elements accessible. */
+    /**
+     * Base address and number of elements accessible.
+     */
     final long base, size;
 
-    /** Calls {@code DoubleRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}. */
+    /**
+     * Calls {@code DoubleRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}.
+     */
     public DoubleRawIndexer(DoublePointer pointer) {
-        this(pointer, new long[] { pointer.limit() - pointer.position() }, new long[] { 1 });
+        this(pointer, new long[]{pointer.limit() - pointer.position()}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}.
+     */
     public DoubleRawIndexer(DoublePointer pointer, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.pointer = pointer;
@@ -51,75 +61,105 @@ public class DoubleRawIndexer extends DoubleIndexer {
         size = pointer.limit() - pointer.position();
     }
 
-    @Override public Pointer pointer() {
+    @Override
+    public Pointer pointer() {
         return pointer;
     }
 
-    @Override public double get(long i) {
+    @Override
+    public double get(long i) {
         return RAW.getDouble(base + checkIndex(i, size) * VALUE_BYTES);
     }
-    @Override public DoubleIndexer get(long i, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer get(long i, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             d[offset + n] = get(i * strides[0] + n);
         }
         return this;
     }
-    @Override public double get(long i, long j) {
+
+    @Override
+    public double get(long i, long j) {
         return get(i * strides[0] + j);
     }
-    @Override public DoubleIndexer get(long i, long j, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer get(long i, long j, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             d[offset + n] = get(i * strides[0] + j * strides[1] + n);
         }
         return this;
     }
-    @Override public double get(long i, long j, long k) {
+
+    @Override
+    public double get(long i, long j, long k) {
         return get(i * strides[0] + j * strides[1] + k);
     }
-    @Override public double get(long... indices) {
+
+    @Override
+    public double get(long... indices) {
         return get(index(indices));
     }
-    @Override public DoubleIndexer get(long[] indices, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer get(long[] indices, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             d[offset + n] = get(index(indices) + n);
         }
         return this;
     }
 
-    @Override public DoubleIndexer put(long i, double d) {
+    @Override
+    public DoubleIndexer put(long i, double d) {
         RAW.putDouble(base + checkIndex(i, size) * VALUE_BYTES, d);
         return this;
     }
-    @Override public DoubleIndexer put(long i, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer put(long i, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(i * strides[0] + n, d[offset + n]);
         }
         return this;
     }
-    @Override public DoubleIndexer put(long i, long j, double d) {
+
+    @Override
+    public DoubleIndexer put(long i, long j, double d) {
         put(i * strides[0] + j, d);
         return this;
     }
-    @Override public DoubleIndexer put(long i, long j, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer put(long i, long j, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(i * strides[0] + j * strides[1] + n, d[offset + n]);
         }
         return this;
     }
-    @Override public DoubleIndexer put(long i, long j, long k, double d) {
+
+    @Override
+    public DoubleIndexer put(long i, long j, long k, double d) {
         put(i * strides[0] + j * strides[1] + k, d);
         return this;
     }
-    @Override public DoubleIndexer put(long[] indices, double d) {
+
+    @Override
+    public DoubleIndexer put(long[] indices, double d) {
         put(index(indices), d);
         return this;
     }
-    @Override public DoubleIndexer put(long[] indices, double[] d, int offset, int length) {
+
+    @Override
+    public DoubleIndexer put(long[] indices, double[] d, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(index(indices) + n, d[offset + n]);
         }
         return this;
     }
 
-    @Override public void release() { pointer = null; }
+    @Override
+    public void release() {
+        pointer = null;
+    }
 }

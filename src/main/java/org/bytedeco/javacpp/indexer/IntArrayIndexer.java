@@ -28,89 +28,125 @@ package org.bytedeco.javacpp.indexer;
  * @author Samuel Audet
  */
 public class IntArrayIndexer extends IntIndexer {
-    /** The backing array. */
+    /**
+     * The backing array.
+     */
     protected int[] array;
 
-    /** Calls {@code IntArrayIndexer(array, { array.length }, { 1 })}. */
+    /**
+     * Calls {@code IntArrayIndexer(array, { array.length }, { 1 })}.
+     */
     public IntArrayIndexer(int[] array) {
-        this(array, new long[] { array.length }, new long[] { 1 });
+        this(array, new long[]{array.length}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #array}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #array}, {@link #sizes} and {@link #strides}.
+     */
     public IntArrayIndexer(int[] array, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.array = array;
     }
 
-    @Override public int[] array() {
+    @Override
+    public int[] array() {
         return array;
     }
 
-    @Override public int get(long i) {
-        return array[(int)i];
+    @Override
+    public int get(long i) {
+        return array[(int) i];
     }
-    @Override public IntIndexer get(long i, int[] m, int offset, int length) {
+
+    @Override
+    public IntIndexer get(long i, int[] m, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            m[offset + n] = array[(int)i * (int)strides[0] + n];
-        }
-        return this;
-    }
-    @Override public int get(long i, long j) {
-        return array[(int)i * (int)strides[0] + (int)j];
-    }
-    @Override public IntIndexer get(long i, long j, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            m[offset + n] = array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + n];
-        }
-        return this;
-    }
-    @Override public int get(long i, long j, long k) {
-        return array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k];
-    }
-    @Override public int get(long... indices) {
-        return array[(int)index(indices)];
-    }
-    @Override public IntIndexer get(long[] indices, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            m[offset + n] = array[(int)index(indices) + n];
+            m[offset + n] = array[(int) i * (int) strides[0] + n];
         }
         return this;
     }
 
-    @Override public IntIndexer put(long i, int n) {
-        array[(int)i] = n;
-        return this;
+    @Override
+    public int get(long i, long j) {
+        return array[(int) i * (int) strides[0] + (int) j];
     }
-    @Override public IntIndexer put(long i, int[] m, int offset, int length) {
+
+    @Override
+    public IntIndexer get(long i, long j, int[] m, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            array[(int)i * (int)strides[0] + n] = m[offset + n];
-        }
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, int n) {
-        array[(int)i * (int)strides[0] + (int)j] = n;
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + n] = m[offset + n];
-        }
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, long k, int n) {
-        array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k] = n;
-        return this;
-    }
-    @Override public IntIndexer put(long[] indices, int n) {
-        array[(int)index(indices)] = n;
-        return this;
-    }
-    @Override public IntIndexer put(long[] indices, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            array[(int)index(indices) + n] = m[offset + n];
+            m[offset + n] = array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + n];
         }
         return this;
     }
 
-    @Override public void release() { array = null; }
+    @Override
+    public int get(long i, long j, long k) {
+        return array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k];
+    }
+
+    @Override
+    public int get(long... indices) {
+        return array[(int) index(indices)];
+    }
+
+    @Override
+    public IntIndexer get(long[] indices, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            m[offset + n] = array[(int) index(indices) + n];
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, int n) {
+        array[(int) i] = n;
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) i * (int) strides[0] + n] = m[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, int n) {
+        array[(int) i * (int) strides[0] + (int) j] = n;
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + n] = m[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, long k, int n) {
+        array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k] = n;
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long[] indices, int n) {
+        array[(int) index(indices)] = n;
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long[] indices, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) index(indices) + n] = m[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public void release() {
+        array = null;
+    }
 }

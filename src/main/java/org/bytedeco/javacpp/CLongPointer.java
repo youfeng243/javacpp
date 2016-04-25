@@ -48,31 +48,66 @@ public class CLongPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public CLongPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public CLongPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public CLongPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public CLongPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public CLongPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public CLongPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public CLongPointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public CLongPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public CLongPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public CLongPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** @return {@code get(0)} */
-    public long get() { return get(0); }
-    /** @return the i-th {@code long} value of a native array */
-    @Cast("long") public native long get(long i);
-    /** @return {@code put(0, l)} */
-    public CLongPointer put(long l) { return put(0, l); }
+    /**
+     * @return {@code get(0)}
+     */
+    public long get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code long} value of a native array
+     */
+    @Cast("long")
+    public native long get(long i);
+
+    /**
+     * @return {@code put(0, l)}
+     */
+    public CLongPointer put(long l) {
+        return put(0, l);
+    }
+
     /**
      * Copies the {@code long} value to the i-th element of a native array.
      *

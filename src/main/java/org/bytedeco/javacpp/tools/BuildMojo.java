@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -45,95 +46,141 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name = "build", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class BuildMojo extends AbstractMojo {
 
-    /** Load user classes from classPath. */
+    /**
+     * Load user classes from classPath.
+     */
     @Parameter(property = "javacpp.classPath", defaultValue = "${project.build.outputDirectory}")
     String classPath = null;
 
-    /** Load user classes from classPaths. */
+    /**
+     * Load user classes from classPaths.
+     */
     @Parameter(property = "javacpp.classPaths")
     String[] classPaths = null;
 
-    /** Add the path to the "platform.includepath" property. */
+    /**
+     * Add the path to the "platform.includepath" property.
+     */
     @Parameter(property = "javacpp.includePath")
     String includePath = null;
 
-    /** Add the paths to the "platform.includepath" property. */
+    /**
+     * Add the paths to the "platform.includepath" property.
+     */
     @Parameter(property = "javacpp.includePaths")
     String[] includePaths = null;
 
-    /** Add the path to the "platform.linkpath" property. */
+    /**
+     * Add the path to the "platform.linkpath" property.
+     */
     @Parameter(property = "javacpp.linkPath")
     String linkPath = null;
 
-    /** Add the paths to the "platform.linkpath" property. */
+    /**
+     * Add the paths to the "platform.linkpath" property.
+     */
     @Parameter(property = "javacpp.linkPaths")
     String[] linkPaths = null;
 
-    /** Add the path to the "platform.preloadpath" property. */
+    /**
+     * Add the path to the "platform.preloadpath" property.
+     */
     @Parameter(property = "javacpp.preloadPath")
     String preloadPath = null;
 
-    /** Add the paths to the "platform.preloadpath" property. */
+    /**
+     * Add the paths to the "platform.preloadpath" property.
+     */
     @Parameter(property = "javacpp.preloadPaths")
     String[] preloadPaths = null;
 
-    /** Output all generated files to outputDirectory. */
+    /**
+     * Output all generated files to outputDirectory.
+     */
     @Parameter(property = "javacpp.outputDirectory")
     File outputDirectory = null;
 
-    /** Output everything in a file named after given outputName. */
+    /**
+     * Output everything in a file named after given outputName.
+     */
     @Parameter(property = "javacpp.outputName")
     String outputName = null;
 
-    /** Compile and delete the generated .cpp files. */
+    /**
+     * Compile and delete the generated .cpp files.
+     */
     @Parameter(property = "javacpp.compile", defaultValue = "true")
     boolean compile = true;
 
-    /** Delete generated C++ JNI files after compilation */
+    /**
+     * Delete generated C++ JNI files after compilation
+     */
     @Parameter(property = "javacpp.deleteJniFiles", defaultValue = "true")
     boolean deleteJniFiles = true;
 
-    /** Generate header file with declarations of callbacks functions. */
+    /**
+     * Generate header file with declarations of callbacks functions.
+     */
     @Parameter(property = "javacpp.header", defaultValue = "false")
     boolean header = false;
 
-    /** Copy to output directory dependent libraries (link and preload). */
+    /**
+     * Copy to output directory dependent libraries (link and preload).
+     */
     @Parameter(property = "javacpp.copyLibs", defaultValue = "false")
     boolean copyLibs = false;
 
-    /** Also create a JAR file named {@code <jarPrefix>-<platform>.jar}. */
+    /**
+     * Also create a JAR file named {@code <jarPrefix>-<platform>.jar}.
+     */
     @Parameter(property = "javacpp.jarPrefix")
     String jarPrefix = null;
 
-    /** Load all properties from resource. */
+    /**
+     * Load all properties from resource.
+     */
     @Parameter(property = "javacpp.properties")
     String properties = null;
 
-    /** Load all properties from file. */
+    /**
+     * Load all properties from file.
+     */
     @Parameter(property = "javacpp.propertyFile")
     File propertyFile = null;
 
-    /** Set property keys to values. */
+    /**
+     * Set property keys to values.
+     */
     @Parameter(property = "javacpp.propertyKeysAndValues")
     Properties propertyKeysAndValues = null;
 
-    /** Process only this class or package (suffixed with .* or .**). */
+    /**
+     * Process only this class or package (suffixed with .* or .**).
+     */
     @Parameter(property = "javacpp.classOrPackageName")
     String classOrPackageName = null;
 
-    /** Process only these classes or packages (suffixed with .* or .**). */
+    /**
+     * Process only these classes or packages (suffixed with .* or .**).
+     */
     @Parameter(property = "javacpp.classOrPackageNames")
     String[] classOrPackageNames = null;
 
-    /** Add environment variables to the compiler subprocess. */
+    /**
+     * Add environment variables to the compiler subprocess.
+     */
     @Parameter(property = "javacpp.environmentVariables")
-    Map<String,String> environmentVariables = null;
+    Map<String, String> environmentVariables = null;
 
-    /** Pass compilerOptions directly to compiler. */
+    /**
+     * Pass compilerOptions directly to compiler.
+     */
     @Parameter(property = "javacpp.compilerOptions")
     String[] compilerOptions = null;
 
-     /** Skip the execution. */
+    /**
+     * Skip the execution.
+     */
     @Parameter(property = "javacpp.skip", defaultValue = "false")
     boolean skip = false;
 
@@ -145,12 +192,13 @@ public class BuildMojo extends AbstractMojo {
             ss = Arrays.copyOf(ss, ss.length + 1);
             ss[ss.length - 1] = s;
         } else if (s != null) {
-            ss = new String[] { s };
+            ss = new String[]{s};
         }
         return ss != null ? ss : new String[0];
     }
 
-    @Override public void execute() throws MojoExecutionException {
+    @Override
+    public void execute() throws MojoExecutionException {
         final Log log = getLog();
         try {
             if (log.isDebugEnabled()) {
@@ -188,10 +236,25 @@ public class BuildMojo extends AbstractMojo {
             classOrPackageNames = merge(classOrPackageNames, classOrPackageName);
 
             Logger logger = new Logger() {
-                @Override public void debug(String s) { log.debug(s); }
-                @Override public void info (String s) { log.info(s);  }
-                @Override public void warn (String s) { log.warn(s);  }
-                @Override public void error(String s) { log.error(s); }
+                @Override
+                public void debug(String s) {
+                    log.debug(s);
+                }
+
+                @Override
+                public void info(String s) {
+                    log.info(s);
+                }
+
+                @Override
+                public void warn(String s) {
+                    log.warn(s);
+                }
+
+                @Override
+                public void error(String s) {
+                    log.error(s);
+                }
             };
             Builder builder = new Builder(logger)
                     .classPaths(classPaths)

@@ -31,89 +31,125 @@ import java.nio.IntBuffer;
  * @author Samuel Audet
  */
 public class IntBufferIndexer extends IntIndexer {
-    /** The backing buffer. */
+    /**
+     * The backing buffer.
+     */
     protected IntBuffer buffer;
 
-    /** Calls {@code IntBufferIndexer(buffer, { buffer.limit() }, { 1 })}. */
+    /**
+     * Calls {@code IntBufferIndexer(buffer, { buffer.limit() }, { 1 })}.
+     */
     public IntBufferIndexer(IntBuffer buffer) {
-        this(buffer, new long[] { buffer.limit() }, new long[] { 1 });
+        this(buffer, new long[]{buffer.limit()}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #buffer}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #buffer}, {@link #sizes} and {@link #strides}.
+     */
     public IntBufferIndexer(IntBuffer buffer, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.buffer = buffer;
     }
 
-    @Override public Buffer buffer() {
+    @Override
+    public Buffer buffer() {
         return buffer;
     }
 
-    @Override public int get(long i) {
-        return buffer.get((int)i);
+    @Override
+    public int get(long i) {
+        return buffer.get((int) i);
     }
-    @Override public IntIndexer get(long i, int[] m, int offset, int length) {
+
+    @Override
+    public IntIndexer get(long i, int[] m, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            m[offset + n] = buffer.get((int)i * (int)strides[0] + n);
-        }
-        return this;
-    }
-    @Override public int get(long i, long j) {
-        return buffer.get((int)i * (int)strides[0] + (int)j);
-    }
-    @Override public IntIndexer get(long i, long j, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            m[offset + n] = buffer.get((int)i * (int)strides[0] + (int)j * (int)strides[1] + n);
-        }
-        return this;
-    }
-    @Override public int get(long i, long j, long k) {
-        return buffer.get((int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k);
-    }
-    @Override public int get(long... indices) {
-        return buffer.get((int)index(indices));
-    }
-    @Override public IntIndexer get(long[] indices, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            m[offset + n] = buffer.get((int)index(indices) + n);
+            m[offset + n] = buffer.get((int) i * (int) strides[0] + n);
         }
         return this;
     }
 
-    @Override public IntIndexer put(long i, int n) {
-        buffer.put((int)i, n);
-        return this;
+    @Override
+    public int get(long i, long j) {
+        return buffer.get((int) i * (int) strides[0] + (int) j);
     }
-    @Override public IntIndexer put(long i, int[] m, int offset, int length) {
+
+    @Override
+    public IntIndexer get(long i, long j, int[] m, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            buffer.put((int)i * (int)strides[0] + n, m[offset + n]);
-        }
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, int n) {
-        buffer.put((int)i * (int)strides[0] + (int)j, n);
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            buffer.put((int)i * (int)strides[0] + (int)j * (int)strides[1] + n, m[offset + n]);
-        }
-        return this;
-    }
-    @Override public IntIndexer put(long i, long j, long k, int n) {
-        buffer.put((int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k, n);
-        return this;
-    }
-    @Override public IntIndexer put(long[] indices, int n) {
-        buffer.put((int)index(indices), n);
-        return this;
-    }
-    @Override public IntIndexer put(long[] indices, int[] m, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            buffer.put((int)index(indices) + n, m[offset + n]);
+            m[offset + n] = buffer.get((int) i * (int) strides[0] + (int) j * (int) strides[1] + n);
         }
         return this;
     }
 
-    @Override public void release() { buffer = null; }
+    @Override
+    public int get(long i, long j, long k) {
+        return buffer.get((int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k);
+    }
+
+    @Override
+    public int get(long... indices) {
+        return buffer.get((int) index(indices));
+    }
+
+    @Override
+    public IntIndexer get(long[] indices, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            m[offset + n] = buffer.get((int) index(indices) + n);
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, int n) {
+        buffer.put((int) i, n);
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            buffer.put((int) i * (int) strides[0] + n, m[offset + n]);
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, int n) {
+        buffer.put((int) i * (int) strides[0] + (int) j, n);
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            buffer.put((int) i * (int) strides[0] + (int) j * (int) strides[1] + n, m[offset + n]);
+        }
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long i, long j, long k, int n) {
+        buffer.put((int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k, n);
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long[] indices, int n) {
+        buffer.put((int) index(indices), n);
+        return this;
+    }
+
+    @Override
+    public IntIndexer put(long[] indices, int[] m, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            buffer.put((int) index(indices) + n, m[offset + n]);
+        }
+        return this;
+    }
+
+    @Override
+    public void release() {
+        buffer = null;
+    }
 }

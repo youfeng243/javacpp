@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Samuel Audet
  */
 class TokenIndexer {
@@ -38,15 +37,25 @@ class TokenIndexer {
         this.isCFile = isCFile;
     }
 
-    /** Set to true to disable temporarily the preprocessor. */
+    /**
+     * Set to true to disable temporarily the preprocessor.
+     */
     boolean raw = false;
-    /** The set of {@link Info} objects to use during preprocessing. */
+    /**
+     * The set of {@link Info} objects to use during preprocessing.
+     */
     InfoMap infoMap = null;
-    /** The token of array, modified by the preprocessor as we go. */
+    /**
+     * The token of array, modified by the preprocessor as we go.
+     */
     Token[] array = null;
-    /** The current index, in the array of tokens. Used by {@link #get(int)} and {@link #next()}. */
+    /**
+     * The current index, in the array of tokens. Used by {@link #get(int)} and {@link #next()}.
+     */
     int index = 0;
-    /** Whether the file came from the C-include path */
+    /**
+     * Whether the file came from the C-include path
+     */
     final boolean isCFile;
 
     Token[] filter(Token[] array, int index) {
@@ -88,7 +97,7 @@ class TokenIndexer {
                     tokens.add(comment);
 
                     String value = "";
-                    for ( ; index < array.length; index++) {
+                    for (; index < array.length; index++) {
                         if (array[index].spacing.indexOf('\n') >= 0) {
                             break;
                         }
@@ -96,7 +105,7 @@ class TokenIndexer {
                             value += array[index].spacing + array[index];
                         }
                         comment.value += array[index].match("\n") ? "\n// "
-                                       : array[index].spacing + array[index].toString().replaceAll("\n", "\n// ");
+                                : array[index].spacing + array[index].toString().replaceAll("\n", "\n// ");
                     }
 
                     if (keyword.match(Token.IF, Token.IFDEF, Token.IFNDEF, Token.ELIF)) {
@@ -124,7 +133,7 @@ class TokenIndexer {
                 defined = define || defined;
             }
             // copy the rest of the tokens from this point on
-            for ( ; index < array.length; index++) {
+            for (; index < array.length; index++) {
                 tokens.add(array[index]);
             }
             array = tokens.toArray(new Token[tokens.size()]);
@@ -181,9 +190,9 @@ class TokenIndexer {
                             } else if (count2 == 0 && token2.match(',')) {
                                 count++;
                                 continue;
-                            } else if (token2.match('(','[','{')) {
+                            } else if (token2.match('(', '[', '{')) {
                                 count2++;
-                            } else if (token2.match(')',']','}')) {
+                            } else if (token2.match(')', ']', '}')) {
                                 count2--;
                             }
                             if (count < args.length) {
@@ -246,7 +255,7 @@ class TokenIndexer {
     }
 
     int preprocess(int index, int count) {
-        for ( ; index < array.length; index++) {
+        for (; index < array.length; index++) {
             Token[] a = null;
             while (a != array) {
                 a = array;
@@ -267,16 +276,24 @@ class TokenIndexer {
         return index;
     }
 
-    /** Returns {@code get(0)}. */
+    /**
+     * Returns {@code get(0)}.
+     */
     Token get() {
         return get(0);
     }
-    /** Returns {@code array[index + i]}. After preprocessing if {@code raw == false}. */
+
+    /**
+     * Returns {@code array[index + i]}. After preprocessing if {@code raw == false}.
+     */
     Token get(int i) {
         int k = raw ? index + i : preprocess(index, i);
         return k < array.length ? array[k] : Token.EOF;
     }
-    /** Increments {@code index} and returns {@code array[index]}. After preprocessing if {@code raw == false}. */
+
+    /**
+     * Increments {@code index} and returns {@code array[index]}. After preprocessing if {@code raw == false}.
+     */
     Token next() {
         index = raw ? index + 1 : preprocess(index, 1);
         return index < array.length ? array[index] : Token.EOF;

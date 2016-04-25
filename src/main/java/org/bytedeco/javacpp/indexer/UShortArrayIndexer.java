@@ -28,89 +28,125 @@ package org.bytedeco.javacpp.indexer;
  * @author Samuel Audet
  */
 public class UShortArrayIndexer extends UShortIndexer {
-    /** The backing array. */
+    /**
+     * The backing array.
+     */
     protected short[] array;
 
-    /** Calls {@code UShortArrayIndexer(array, { array.length }, { 1 })}. */
+    /**
+     * Calls {@code UShortArrayIndexer(array, { array.length }, { 1 })}.
+     */
     public UShortArrayIndexer(short[] array) {
-        this(array, new long[] { array.length }, new long[] { 1 });
+        this(array, new long[]{array.length}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #array}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #array}, {@link #sizes} and {@link #strides}.
+     */
     public UShortArrayIndexer(short[] array, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.array = array;
     }
 
-    @Override public short[] array() {
+    @Override
+    public short[] array() {
         return array;
     }
 
-    @Override public int get(long i) {
-        return array[(int)i] & 0xFFFF;
+    @Override
+    public int get(long i) {
+        return array[(int) i] & 0xFFFF;
     }
-    @Override public UShortIndexer get(long i, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer get(long i, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            s[offset + n] = array[(int)i * (int)strides[0] + n] & 0xFFFF;
-        }
-        return this;
-    }
-    @Override public int get(long i, long j) {
-        return array[(int)i * (int)strides[0] + (int)j] & 0xFFFF;
-    }
-    @Override public UShortIndexer get(long i, long j, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            s[offset + n] = array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + n] & 0xFFFF;
-        }
-        return this;
-    }
-    @Override public int get(long i, long j, long k) {
-        return array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k] & 0xFFFF;
-    }
-    @Override public int get(long... indices) {
-        return array[(int)index(indices)] & 0xFFFF;
-    }
-    @Override public UShortIndexer get(long[] indices, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            s[offset + n] = array[(int)index(indices) + n] & 0xFFFF;
+            s[offset + n] = array[(int) i * (int) strides[0] + n] & 0xFFFF;
         }
         return this;
     }
 
-    @Override public UShortIndexer put(long i, int s) {
-        array[(int)i] = (short)s;
-        return this;
+    @Override
+    public int get(long i, long j) {
+        return array[(int) i * (int) strides[0] + (int) j] & 0xFFFF;
     }
-    @Override public UShortIndexer put(long i, int[] s, int offset, int length) {
+
+    @Override
+    public UShortIndexer get(long i, long j, int[] s, int offset, int length) {
         for (int n = 0; n < length; n++) {
-            array[(int)i * (int)strides[0] + n] = (short)s[offset + n];
-        }
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, int s) {
-        array[(int)i * (int)strides[0] + (int)j] = (short)s;
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + n] = (short)s[offset + n];
-        }
-        return this;
-    }
-    @Override public UShortIndexer put(long i, long j, long k, int s) {
-        array[(int)i * (int)strides[0] + (int)j * (int)strides[1] + (int)k] = (short)s;
-        return this;
-    }
-    @Override public UShortIndexer put(long[] indices, int s) {
-        array[(int)index(indices)] = (short)s;
-        return this;
-    }
-    @Override public UShortIndexer put(long[] indices, int[] s, int offset, int length) {
-        for (int n = 0; n < length; n++) {
-            array[(int)index(indices) + n] = (short)s[offset + n];
+            s[offset + n] = array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + n] & 0xFFFF;
         }
         return this;
     }
 
-    @Override public void release() { array = null; }
+    @Override
+    public int get(long i, long j, long k) {
+        return array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k] & 0xFFFF;
+    }
+
+    @Override
+    public int get(long... indices) {
+        return array[(int) index(indices)] & 0xFFFF;
+    }
+
+    @Override
+    public UShortIndexer get(long[] indices, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            s[offset + n] = array[(int) index(indices) + n] & 0xFFFF;
+        }
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, int s) {
+        array[(int) i] = (short) s;
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) i * (int) strides[0] + n] = (short) s[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, long j, int s) {
+        array[(int) i * (int) strides[0] + (int) j] = (short) s;
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, long j, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + n] = (short) s[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long i, long j, long k, int s) {
+        array[(int) i * (int) strides[0] + (int) j * (int) strides[1] + (int) k] = (short) s;
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long[] indices, int s) {
+        array[(int) index(indices)] = (short) s;
+        return this;
+    }
+
+    @Override
+    public UShortIndexer put(long[] indices, int[] s, int offset, int length) {
+        for (int n = 0; n < length; n++) {
+            array[(int) index(indices) + n] = (short) s[offset + n];
+        }
+        return this;
+    }
+
+    @Override
+    public void release() {
+        array = null;
+    }
 }

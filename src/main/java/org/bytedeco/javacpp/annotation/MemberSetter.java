@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.tools.Generator;
 
 /**
@@ -21,10 +22,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * the assignment of a member variable could potentially work with this annotation.
  * All but the last argument are considered as indices to access a member array.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface MemberSetter { }
+public @interface MemberSetter {
+}

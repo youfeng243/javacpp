@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.tools.Generator;
 
@@ -17,10 +18,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * the C++ compiler from complaining in other cases, we can add this annotation
  * to the peer class declaration.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface NoOffset { }
+public @interface NoOffset {
+}

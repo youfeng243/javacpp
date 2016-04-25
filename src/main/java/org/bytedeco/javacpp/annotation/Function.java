@@ -5,12 +5,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.tools.Generator;
 
 /**
  * Overrides the detection of allocators, getters, and setters. Indicates to the
  * {@link Generator} that we wish the method to call the corresponding C++ function.
  *
+ * @author Samuel Audet
  * @see Allocator
  * @see ArrayAllocator
  * @see MemberGetter
@@ -18,9 +20,9 @@ import org.bytedeco.javacpp.tools.Generator;
  * @see ValueSetter
  * @see ValueGetter
  * @see Generator
- *
- * @author Samuel Audet
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface Function { }
+public @interface Function {
+}

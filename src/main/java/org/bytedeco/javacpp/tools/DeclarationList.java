@@ -28,7 +28,6 @@ import java.util.ListIterator;
 import java.util.Scanner;
 
 /**
- *
  * @author Samuel Audet
  */
 class DeclarationList extends ArrayList<Declaration> {
@@ -39,7 +38,9 @@ class DeclarationList extends ArrayList<Declaration> {
     String spacing = null;
     DeclarationList inherited = null;
 
-    DeclarationList() { }
+    DeclarationList() {
+    }
+
     DeclarationList(DeclarationList inherited) {
         this.inherited = inherited;
     }
@@ -59,7 +60,8 @@ class DeclarationList extends ArrayList<Declaration> {
         return text;
     }
 
-    @Override public boolean add(Declaration decl) {
+    @Override
+    public boolean add(Declaration decl) {
         boolean add = true;
         if (templateMap != null && !templateMap.full() && (decl.type != null || decl.declarator != null)) {
             if (infoIterator == null) {
@@ -97,17 +99,20 @@ class DeclarationList extends ArrayList<Declaration> {
 
         List<Declaration> stack = new ArrayList<Declaration>();
         ListIterator<Declaration> it = stack.listIterator();
-        it.add(decl); it.previous();
+        it.add(decl);
+        it.previous();
         while (it.hasNext()) {
             decl = it.next();
             Declarator dcl = decl.declarator;
             if (dcl != null && dcl.definition != null) {
-                it.add(dcl.definition); it.previous();
+                it.add(dcl.definition);
+                it.previous();
             }
             if (dcl != null && dcl.parameters != null && dcl.parameters.declarators != null) {
                 for (Declarator d : dcl.parameters.declarators) {
                     if (d != null && d.definition != null) {
-                        it.add(d.definition); it.previous();
+                        it.add(d.definition);
+                        it.previous();
                     }
                 }
             }

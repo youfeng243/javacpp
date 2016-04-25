@@ -38,19 +38,21 @@ public class CharPointer extends Pointer {
      * @see #putString(String)
      */
     public CharPointer(String s) {
-        this(s.toCharArray().length+1);
+        this(s.toCharArray().length + 1);
         putString(s);
     }
+
     /**
      * Allocates enough memory for the array and copies it.
      *
      * @param array the array to copy
      * @see #put(char[])
      */
-    public CharPointer(char ... array) {
+    public CharPointer(char... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -68,6 +70,7 @@ public class CharPointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code short} array of the given size.
      *
@@ -80,29 +83,52 @@ public class CharPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public CharPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public CharPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public CharPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public CharPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public CharPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public CharPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public CharPointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public CharPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public CharPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public CharPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** Returns the chars, assuming a null-terminated string if {@code limit <= position}. */
+    /**
+     * Returns the chars, assuming a null-terminated string if {@code limit <= position}.
+     */
     public char[] getStringChars() {
         if (limit > position) {
-            char[] array = new char[(int)Math.min(limit - position, Integer.MAX_VALUE)];
+            char[] array = new char[(int) Math.min(limit - position, Integer.MAX_VALUE)];
             get(array);
             return array;
         }
@@ -113,7 +139,7 @@ public class CharPointer extends Pointer {
         while ((buffer[i] = get(i)) != 0) {
             i++;
             if (i >= buffer.length) {
-                char[] newbuffer = new char[2*buffer.length];
+                char[] newbuffer = new char[2 * buffer.length];
                 System.arraycopy(buffer, 0, newbuffer, 0, buffer.length);
                 buffer = newbuffer;
             }
@@ -122,10 +148,14 @@ public class CharPointer extends Pointer {
         System.arraycopy(buffer, 0, newbuffer, 0, i);
         return newbuffer;
     }
-    /** Returns the String, assuming a null-terminated string if {@code limit <= position}. */
+
+    /**
+     * Returns the String, assuming a null-terminated string if {@code limit <= position}.
+     */
     public String getString() {
         return new String(getStringChars());
     }
+
     /**
      * Copies the String chars into native memory, including a terminating null char.
      * Sets the limit to just before the terminating null character.
@@ -137,15 +167,28 @@ public class CharPointer extends Pointer {
      */
     public CharPointer putString(String s) {
         char[] chars = s.toCharArray();
-        return put(chars).put(chars.length, (char)0).limit(chars.length);
+        return put(chars).put(chars.length, (char) 0).limit(chars.length);
     }
 
-    /** @return {@code get(0)} */
-    public char get() { return get(0); }
-    /** @return the i-th {@code char} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public char get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code char} value of a native array
+     */
     public native char get(long i);
-    /** @return {@code put(0, c)} */
-    public CharPointer put(char c) { return put(0, c); }
+
+    /**
+     * @return {@code put(0, c)}
+     */
+    public CharPointer put(char c) {
+        return put(0, c);
+    }
+
     /**
      * Copies the {@code char} value to the i-th element of a native array.
      *
@@ -155,31 +198,45 @@ public class CharPointer extends Pointer {
      */
     public native CharPointer put(long i, char c);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public CharPointer get(char[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public CharPointer put(char ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public CharPointer get(char[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public CharPointer put(char... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native CharPointer get(char[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native CharPointer put(char[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asCharBuffer()} */
-    @Override public final CharBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asCharBuffer()}
+     */
+    @Override
+    public final CharBuffer asBuffer() {
         return asByteBuffer().asCharBuffer();
     }
 }

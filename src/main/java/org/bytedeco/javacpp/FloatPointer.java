@@ -37,10 +37,11 @@ public class FloatPointer extends Pointer {
      * @param array the array to copy
      * @see #put(float[])
      */
-    public FloatPointer(float ... array) {
+    public FloatPointer(float... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -58,6 +59,7 @@ public class FloatPointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code float} array of the given size.
      *
@@ -70,31 +72,65 @@ public class FloatPointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public FloatPointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public FloatPointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public FloatPointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public FloatPointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public FloatPointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public FloatPointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#position(long) */
-    @Override public FloatPointer limit(long limit) {
+
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public FloatPointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public FloatPointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public FloatPointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** @return {@code get(0)} */
-    public float get() { return get(0); }
-    /** @return the i-th {@code float} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public float get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code float} value of a native array
+     */
     public native float get(long i);
-    /** @return {@code put(0, f)} */
-    public FloatPointer put(float f) { return put(0, f); }
+
+    /**
+     * @return {@code put(0, f)}
+     */
+    public FloatPointer put(float f) {
+        return put(0, f);
+    }
+
     /**
      * Copies the {@code float} value to the i-th element of a native array.
      *
@@ -104,31 +140,45 @@ public class FloatPointer extends Pointer {
      */
     public native FloatPointer put(long i, float f);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public FloatPointer get(float[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public FloatPointer put(float ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public FloatPointer get(float[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public FloatPointer put(float... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native FloatPointer get(float[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native FloatPointer put(float[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asFloatBuffer()} */
-    @Override public final FloatBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asFloatBuffer()}
+     */
+    @Override
+    public final FloatBuffer asBuffer() {
         return asByteBuffer().asFloatBuffer();
     }
 }

@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.tools.Generator;
 
 /**
@@ -16,13 +17,15 @@ import org.bytedeco.javacpp.tools.Generator;
  * access by name, for example, a callback pointer or function object, from C++.
  * For all those cases, we require this annotation.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Name {
-    /** The second element gets used as a suffix to work around arrays of anonymous struct or union. */
+    /**
+     * The second element gets used as a suffix to work around arrays of anonymous struct or union.
+     */
     String[] value();
 }

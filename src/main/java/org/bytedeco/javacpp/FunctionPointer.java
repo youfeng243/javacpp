@@ -40,11 +40,14 @@ import org.bytedeco.javacpp.tools.Generator;
  * usual {@code native void allocate()} method to support explicit allocation,
  * which is typically a requirement for callback functions.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
 public abstract class FunctionPointer extends Pointer {
-    protected FunctionPointer() { }
-    protected FunctionPointer(Pointer p) { super(p); }
+    protected FunctionPointer() {
+    }
+
+    protected FunctionPointer(Pointer p) {
+        super(p);
+    }
 }

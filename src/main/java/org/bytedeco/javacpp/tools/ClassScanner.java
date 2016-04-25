@@ -36,9 +36,9 @@ import java.util.zip.ZipEntry;
  */
 class ClassScanner {
     ClassScanner(Logger logger, Collection<Class> classes, UserClassLoader loader) {
-        this.logger  = logger;
+        this.logger = logger;
         this.classes = classes;
-        this.loader  = loader;
+        this.loader = loader;
     }
 
     final Logger logger;
@@ -48,6 +48,7 @@ class ClassScanner {
     public Collection<Class> getClasses() {
         return classes;
     }
+
     public UserClassLoader getClassLoader() {
         return loader;
     }
@@ -56,7 +57,7 @@ class ClassScanner {
         if (className == null) {
             return;
         } else if (className.endsWith(".class")) {
-            className = className.substring(0, className.length()-6);
+            className = className.substring(0, className.length() - 6);
         }
         Class c = Class.forName(className, false, loader);
         if (!classes.contains(c)) {
@@ -67,7 +68,7 @@ class ClassScanner {
     public void addMatchingFile(String filename, String packagePath, boolean recursive) throws ClassNotFoundException, NoClassDefFoundError {
         if (filename != null && filename.endsWith(".class") &&
                 (packagePath == null || (recursive && filename.startsWith(packagePath)) ||
-                filename.regionMatches(0, packagePath, 0, Math.max(filename.lastIndexOf('/'), packagePath.lastIndexOf('/'))))) {
+                        filename.regionMatches(0, packagePath, 0, Math.max(filename.lastIndexOf('/'), packagePath.lastIndexOf('/'))))) {
             addClass(filename.replace('/', '.'));
         }
     }
@@ -118,9 +119,9 @@ class ClassScanner {
         }
         name = name.replace('/', '.');
         if (name.endsWith(".**")) {
-            addPackage(name.substring(0, name.length()-3), true);
+            addPackage(name.substring(0, name.length() - 3), true);
         } else if (name.endsWith(".*")) {
-            addPackage(name.substring(0, name.length()-2), false);
+            addPackage(name.substring(0, name.length() - 2), false);
         } else {
             addClass(name);
         }

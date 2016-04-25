@@ -25,13 +25,13 @@ package org.bytedeco.javacpp.tools;
 import java.util.LinkedHashMap;
 
 /**
- *
  * @author Samuel Audet
  */
-class TemplateMap extends LinkedHashMap<String,Type> {
+class TemplateMap extends LinkedHashMap<String, Type> {
     TemplateMap(TemplateMap parent) {
         this.parent = parent;
     }
+
     Type type = null;
     Declarator declarator = null;
     TemplateMap parent = null;

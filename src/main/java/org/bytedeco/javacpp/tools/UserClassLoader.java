@@ -35,13 +35,16 @@ import java.util.List;
  */
 class UserClassLoader extends URLClassLoader {
     private List<String> paths = new ArrayList<String>();
+
     public UserClassLoader() {
         super(new URL[0]);
     }
+
     public UserClassLoader(ClassLoader parent) {
         super(new URL[0], parent);
     }
-    public void addPaths(String ... paths) {
+
+    public void addPaths(String... paths) {
         if (paths == null) {
             return;
         }
@@ -58,13 +61,16 @@ class UserClassLoader extends URLClassLoader {
             }
         }
     }
+
     public String[] getPaths() {
         if (paths.isEmpty()) {
             addPaths(System.getProperty("user.dir"));
         }
         return paths.toArray(new String[paths.size()]);
     }
-    @Override protected Class<?> findClass(String name)
+
+    @Override
+    protected Class<?> findClass(String name)
             throws ClassNotFoundException {
         if (paths.isEmpty()) {
             addPaths(System.getProperty("user.dir"));

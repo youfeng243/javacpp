@@ -59,10 +59,10 @@ public class Builder {
      * Calls {@link Parser#parse(File, String[], Class)} after creating an instance of the Class.
      *
      * @param classPath an array of paths to try to load header files from
-     * @param cls The class annotated with {@link org.bytedeco.javacpp.annotation.Properties}
-     *            and implementing {@link InfoMapper}
+     * @param cls       The class annotated with {@link org.bytedeco.javacpp.annotation.Properties}
+     *                  and implementing {@link InfoMapper}
      * @return the target File produced
-     * @throws IOException on Java target file writing error
+     * @throws IOException     on Java target file writing error
      * @throws ParserException on C/C++ header file parsing error
      */
     File parse(String[] classPath, Class cls) throws IOException, ParserException {
@@ -74,7 +74,7 @@ public class Builder {
      * as well as the link and library paths for the {@code jvm} library.
      *
      * @param properties the Properties containing the paths to update
-     * @param header to request support for exporting callbacks via generated header file
+     * @param header     to request support for exporting callbacks via generated header file
      */
     static void includeJavaPaths(ClassProperties properties, boolean header) {
         if (properties.getProperty("platform", "").startsWith("android")) {
@@ -83,13 +83,14 @@ public class Builder {
         }
         String platform = Loader.getPlatform();
         final String jvmlink = properties.getProperty("platform.link.prefix", "") +
-                       "jvm" + properties.getProperty("platform.link.suffix", "");
-        final String jvmlib  = properties.getProperty("platform.library.prefix", "") +
-                       "jvm" + properties.getProperty("platform.library.suffix", "");
+                "jvm" + properties.getProperty("platform.link.suffix", "");
+        final String jvmlib = properties.getProperty("platform.library.prefix", "") +
+                "jvm" + properties.getProperty("platform.library.suffix", "");
         final String[] jnipath = new String[2];
         final String[] jvmpath = new String[2];
         FilenameFilter filter = new FilenameFilter() {
-            @Override public boolean accept(File dir, String name) {
+            @Override
+            public boolean accept(File dir, String name) {
                 if (new File(dir, "jni.h").exists()) {
                     jnipath[0] = dir.getAbsolutePath();
                 }
@@ -108,7 +109,8 @@ public class Builder {
         File javaHome = new File(System.getProperty("java.home")).getParentFile();
         try {
             javaHome = javaHome.getCanonicalFile();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
         ArrayList<File> dirs = new ArrayList<File>(Arrays.asList(javaHome.listFiles(filter)));
         while (!dirs.isEmpty()) {
             File d = dirs.remove(dirs.size() - 1);
@@ -116,7 +118,8 @@ public class Builder {
             for (File f : d.listFiles(filter)) {
                 try {
                     f = f.getCanonicalFile();
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
                 if (!dpath.startsWith(f.getPath())) {
                     dirs.add(f);
                 }
@@ -151,7 +154,7 @@ public class Builder {
      *
      * @param sourceFilename the C++ source filename
      * @param outputFilename the output filename of the shared library
-     * @param properties the Properties detailing the compiler options to use
+     * @param properties     the Properties detailing the compiler options to use
      * @return the result of {@link Process#waitFor()}
      * @throws IOException
      * @throws InterruptedException
@@ -162,7 +165,7 @@ public class Builder {
 
         includeJavaPaths(properties, header);
 
-        String platform  = Loader.getPlatform();
+        String platform = Loader.getPlatform();
         String compilerPath = properties.getProperty("platform.compiler");
         command.add(compilerPath);
 
@@ -171,7 +174,8 @@ public class Builder {
             for (String s : properties.get("platform.sysroot")) {
                 if (new File(s).isDirectory()) {
                     if (p.endsWith(" ")) {
-                        command.add(p.trim()); command.add(s);
+                        command.add(p.trim());
+                        command.add(s);
                     } else {
                         command.add(p + s);
                     }
@@ -184,7 +188,8 @@ public class Builder {
             for (String s : properties.get("platform.includepath")) {
                 if (new File(s).isDirectory()) {
                     if (p.endsWith(" ")) {
-                        command.add(p.trim()); command.add(s);
+                        command.add(p.trim());
+                        command.add(s);
                     } else {
                         command.add(p + s);
                     }
@@ -228,18 +233,20 @@ public class Builder {
         }
 
         {
-            String p  = properties.getProperty("platform.linkpath.prefix", "");
+            String p = properties.getProperty("platform.linkpath.prefix", "");
             String p2 = properties.getProperty("platform.linkpath.prefix2");
             for (String s : properties.get("platform.linkpath")) {
                 if (new File(s).isDirectory()) {
                     if (p.endsWith(" ")) {
-                        command.add(p.trim()); command.add(s);
+                        command.add(p.trim());
+                        command.add(s);
                     } else {
                         command.add(p + s);
                     }
                     if (p2 != null) {
                         if (p2.endsWith(" ")) {
-                            command.add(p2.trim()); command.add(s);
+                            command.add(p2.trim());
+                            command.add(s);
                         } else {
                             command.add(p2 + s);
                         }
@@ -261,11 +268,15 @@ public class Builder {
                     s = libnameversion[0];
                 }
                 if (p.endsWith(" ") && x.startsWith(" ")) {
-                    command.add(i, p.trim()); command.add(i + 1, s); command.add(i + 2, x.trim());
+                    command.add(i, p.trim());
+                    command.add(i + 1, s);
+                    command.add(i + 2, x.trim());
                 } else if (p.endsWith(" ")) {
-                    command.add(i, p.trim()); command.add(i + 1, s + x);
+                    command.add(i, p.trim());
+                    command.add(i + 1, s + x);
                 } else if (x.startsWith(" ")) {
-                    command.add(i, p + s); command.add(i + 1, x.trim());
+                    command.add(i, p + s);
+                    command.add(i + 1, x.trim());
                 } else {
                     command.add(i, p + s + x);
                 }
@@ -277,7 +288,8 @@ public class Builder {
             for (String s : properties.get("platform.frameworkpath")) {
                 if (new File(s).isDirectory()) {
                     if (p.endsWith(" ")) {
-                        command.add(p.trim()); command.add(s);
+                        command.add(p.trim());
+                        command.add(s);
                     } else {
                         command.add(p + s);
                     }
@@ -290,11 +302,15 @@ public class Builder {
             String x = properties.getProperty("platform.framework.suffix", "");
             for (String s : properties.get("platform.framework")) {
                 if (p.endsWith(" ") && x.startsWith(" ")) {
-                    command.add(p.trim()); command.add(s); command.add(x.trim());
+                    command.add(p.trim());
+                    command.add(s);
+                    command.add(x.trim());
                 } else if (p.endsWith(" ")) {
-                    command.add(p.trim()); command.add(s + x);
+                    command.add(p.trim());
+                    command.add(s + x);
                 } else if (x.startsWith(" ")) {
-                    command.add(p + s); command.add(x.trim());
+                    command.add(p + s);
+                    command.add(x.trim());
                 } else {
                     command.add(p + s + x);
                 }
@@ -330,7 +346,7 @@ public class Builder {
      * Generates a C++ source file for classes, and compiles everything in
      * one shared library when {@code compile == true}.
      *
-     * @param classes the Class objects as input to Generator
+     * @param classes    the Class objects as input to Generator
      * @param outputName the output name of the shared library
      * @return the actual File generated, either the compiled library or its source
      * @throws IOException
@@ -339,15 +355,15 @@ public class Builder {
     File generateAndCompile(Class[] classes, String outputName) throws IOException, InterruptedException {
         File outputFile = null, outputPath = outputDirectory;
         ClassProperties p = Loader.loadProperties(classes, properties, true);
-        String platform     = p.getProperty("platform");
+        String platform = p.getProperty("platform");
         String sourcePrefix = new File(outputPath, outputName).getPath();
         String sourceSuffix = p.getProperty("platform.source.suffix", ".cpp");
-        String libraryPath  = p.getProperty("platform.library.path", "");
-        String libraryName  = p.getProperty("platform.library.prefix", "") + outputName + p.getProperty("platform.library.suffix", "");
+        String libraryPath = p.getProperty("platform.library.path", "");
+        String libraryName = p.getProperty("platform.library.prefix", "") + outputName + p.getProperty("platform.library.suffix", "");
         if (outputPath == null) {
             URI uri = null;
             try {
-                String resourceName = '/' + classes[classes.length - 1].getName().replace('.', '/')  + ".class";
+                String resourceName = '/' + classes[classes.length - 1].getName().replace('.', '/') + ".class";
                 String resourceURL = classes[classes.length - 1].getResource(resourceName).toString();
                 File packageDir = new File(uri = new URI(resourceURL.substring(0, resourceURL.lastIndexOf('/') + 1)));
                 File targetDir = libraryPath.length() > 0
@@ -401,12 +417,12 @@ public class Builder {
      * Stores all the files in the given JAR file. Also attempts to root the paths
      * of the filenames to each element of a list of classpaths.
      *
-     * @param jarFile the JAR file to create
+     * @param jarFile   the JAR file to create
      * @param classPath an array of paths to try to use as root for classes
-     * @param files a list of files to store in the JAR file
+     * @param files     a list of files to store in the JAR file
      * @throws IOException
      */
-    void createJar(File jarFile, String[] classPath, File ... files) throws IOException {
+    void createJar(File jarFile, String[] classPath, File... files) throws IOException {
         logger.info("Creating " + jarFile);
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
         for (File f : files) {
@@ -450,8 +466,10 @@ public class Builder {
     public Builder() {
         this(Logger.create(Builder.class));
     }
+
     /**
      * Constructor that simply initializes everything.
+     *
      * @param logger where to send messages
      */
     public Builder(Logger logger) {
@@ -463,105 +481,170 @@ public class Builder {
         compilerOptions = new ArrayList<String>();
     }
 
-    /** Logger where to send debug, info, warning, and error messages. */
+    /**
+     * Logger where to send debug, info, warning, and error messages.
+     */
     final Logger logger;
-    /** The directory where the generated files and compiled shared libraries get written to.
-     *  By default they are placed in the same directory as the {@code .class} file. */
+    /**
+     * The directory where the generated files and compiled shared libraries get written to.
+     * By default they are placed in the same directory as the {@code .class} file.
+     */
     File outputDirectory = null;
-    /** The name of the output generated source file or shared library. This enables single-
-     *  file output mode. By default, the top-level enclosing classes get one file each. */
+    /**
+     * The name of the output generated source file or shared library. This enables single-
+     * file output mode. By default, the top-level enclosing classes get one file each.
+     */
     String outputName = null;
-    /** The name of the JAR file to create, if not {@code null}. */
+    /**
+     * The name of the JAR file to create, if not {@code null}.
+     */
     String jarPrefix = null;
-    /** If true, compiles the generated source file to a shared library and deletes source. */
+    /**
+     * If true, compiles the generated source file to a shared library and deletes source.
+     */
     boolean compile = true;
-    /** If true, preserves the generated C++ JNI files after compilation */
+    /**
+     * If true, preserves the generated C++ JNI files after compilation
+     */
     boolean deleteJniFiles = true;
-    /** If true, also generates C++ header files containing declarations of callback functions. */
+    /**
+     * If true, also generates C++ header files containing declarations of callback functions.
+     */
     boolean header = false;
-    /** If true, also copies to the output directory dependent shared libraries (link and preload). */
+    /**
+     * If true, also copies to the output directory dependent shared libraries (link and preload).
+     */
     boolean copyLibs = false;
-    /** Accumulates the various properties loaded from resources, files, command line options, etc. */
+    /**
+     * Accumulates the various properties loaded from resources, files, command line options, etc.
+     */
     Properties properties = null;
-    /** The instance of the {@link ClassScanner} that fills up a {@link Collection} of {@link Class} objects to process. */
+    /**
+     * The instance of the {@link ClassScanner} that fills up a {@link Collection} of {@link Class} objects to process.
+     */
     ClassScanner classScanner = null;
-    /** User specified environment variables to pass to the native compiler. */
-    Map<String,String> environmentVariables = null;
-    /** Contains additional command line options from the user for the native compiler. */
+    /**
+     * User specified environment variables to pass to the native compiler.
+     */
+    Map<String, String> environmentVariables = null;
+    /**
+     * Contains additional command line options from the user for the native compiler.
+     */
     Collection<String> compilerOptions = null;
 
-    /** Splits argument with {@link File#pathSeparator} and appends result to paths of the {@link #classScanner}. */
+    /**
+     * Splits argument with {@link File#pathSeparator} and appends result to paths of the {@link #classScanner}.
+     */
     public Builder classPaths(String classPaths) {
         classPaths(classPaths == null ? null : classPaths.split(File.pathSeparator));
         return this;
     }
-    /** Appends argument to the paths of the {@link #classScanner}. */
-    public Builder classPaths(String ... classPaths) {
+
+    /**
+     * Appends argument to the paths of the {@link #classScanner}.
+     */
+    public Builder classPaths(String... classPaths) {
         classScanner.getClassLoader().addPaths(classPaths);
         return this;
     }
-    /** Sets the {@link #outputDirectory} field to the argument. */
+
+    /**
+     * Sets the {@link #outputDirectory} field to the argument.
+     */
     public Builder outputDirectory(String outputDirectory) {
         outputDirectory(outputDirectory == null ? null : new File(outputDirectory));
         return this;
     }
-    /** Sets the {@link #outputDirectory} field to the argument. */
+
+    /**
+     * Sets the {@link #outputDirectory} field to the argument.
+     */
     public Builder outputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
         return this;
     }
-    /** Sets the {@link #compile} field to the argument. */
+
+    /**
+     * Sets the {@link #compile} field to the argument.
+     */
     public Builder compile(boolean compile) {
         this.compile = compile;
         return this;
     }
-    /** Sets the {@link #deleteJniFiles} field to the argument. */
+
+    /**
+     * Sets the {@link #deleteJniFiles} field to the argument.
+     */
     public Builder deleteJniFiles(boolean deleteJniFiles) {
         this.deleteJniFiles = deleteJniFiles;
         return this;
     }
-    /** Sets the {@link #header} field to the argument. */
+
+    /**
+     * Sets the {@link #header} field to the argument.
+     */
     public Builder header(boolean header) {
         this.header = header;
         return this;
     }
-    /** Sets the {@link #copyLibs} field to the argument. */
+
+    /**
+     * Sets the {@link #copyLibs} field to the argument.
+     */
     public Builder copyLibs(boolean copyLibs) {
         this.copyLibs = copyLibs;
         return this;
     }
-    /** Sets the {@link #outputName} field to the argument. */
+
+    /**
+     * Sets the {@link #outputName} field to the argument.
+     */
     public Builder outputName(String outputName) {
         this.outputName = outputName;
         return this;
     }
-    /** Sets the {@link #jarPrefix} field to the argument. */
+
+    /**
+     * Sets the {@link #jarPrefix} field to the argument.
+     */
     public Builder jarPrefix(String jarPrefix) {
         this.jarPrefix = jarPrefix;
         return this;
     }
-    /** Sets the {@link #properties} field to the ones loaded from resources for the specified platform. */
+
+    /**
+     * Sets the {@link #properties} field to the ones loaded from resources for the specified platform.
+     */
     public Builder properties(String platform) {
         if (platform != null) {
             properties = Loader.loadProperties(platform);
         }
         return this;
     }
-    /** Adds all the properties of the argument to the {@link #properties} field. */
+
+    /**
+     * Adds all the properties of the argument to the {@link #properties} field.
+     */
     public Builder properties(Properties properties) {
         if (properties != null) {
             for (Map.Entry e : properties.entrySet()) {
-                property((String)e.getKey(), (String)e.getValue());
+                property((String) e.getKey(), (String) e.getValue());
             }
         }
         return this;
     }
-    /** Sets the {@link #properties} field to the ones loaded from the specified file. */
+
+    /**
+     * Sets the {@link #properties} field to the ones loaded from the specified file.
+     */
     public Builder propertyFile(String filename) throws IOException {
         propertyFile(filename == null ? null : new File(filename));
         return this;
     }
-    /** Sets the {@link #properties} field to the ones loaded from the specified file. */
+
+    /**
+     * Sets the {@link #properties} field to the ones loaded from the specified file.
+     */
     public Builder propertyFile(File propertyFile) throws IOException {
         if (propertyFile == null) {
             return this;
@@ -576,26 +659,35 @@ public class Builder {
         fis.close();
         return this;
     }
-    /** Sets a property of the {@link #properties} field, in either "key=value" or "key:value" format. */
+
+    /**
+     * Sets a property of the {@link #properties} field, in either "key=value" or "key:value" format.
+     */
     public Builder property(String keyValue) {
         int equalIndex = keyValue.indexOf('=');
         if (equalIndex < 0) {
             equalIndex = keyValue.indexOf(':');
         }
         property(keyValue.substring(2, equalIndex),
-                 keyValue.substring(equalIndex+1));
+                keyValue.substring(equalIndex + 1));
         return this;
     }
-    /** Sets a key/value pair property of the {@link #properties} field. */
+
+    /**
+     * Sets a key/value pair property of the {@link #properties} field.
+     */
     public Builder property(String key, String value) {
         if (key.length() > 0 && value.length() > 0) {
             properties.put(key, value);
         }
         return this;
     }
-    /** Requests the {@link #classScanner} to add a class or all classes from a package.
-     *  A {@code null} argument indicates the unnamed package. */
-    public Builder classesOrPackages(String ... classesOrPackages) throws IOException, ClassNotFoundException, NoClassDefFoundError {
+
+    /**
+     * Requests the {@link #classScanner} to add a class or all classes from a package.
+     * A {@code null} argument indicates the unnamed package.
+     */
+    public Builder classesOrPackages(String... classesOrPackages) throws IOException, ClassNotFoundException, NoClassDefFoundError {
         if (classesOrPackages == null) {
             classScanner.addPackage(null, true);
         } else for (String s : classesOrPackages) {
@@ -603,13 +695,19 @@ public class Builder {
         }
         return this;
     }
-    /** Sets the {@link #environmentVariables} field to the argument. */
-    public Builder environmentVariables(Map<String,String> environmentVariables) {
+
+    /**
+     * Sets the {@link #environmentVariables} field to the argument.
+     */
+    public Builder environmentVariables(Map<String, String> environmentVariables) {
         this.environmentVariables = environmentVariables;
         return this;
     }
-    /** Appends arguments to the {@link #compilerOptions} field. */
-    public Builder compilerOptions(String ... options) {
+
+    /**
+     * Appends arguments to the {@link #compilerOptions} field.
+     */
+    public Builder compilerOptions(String... options) {
         if (options != null) {
             compilerOptions.addAll(Arrays.asList(options));
         }
@@ -725,9 +823,9 @@ public class Builder {
             version = "unknown";
         }
         System.out.println(
-            "JavaCPP version " + version + "\n" +
-            "Copyright (C) 2011-2016 Samuel Audet <samuel.audet@gmail.com>\n" +
-            "Project site: https://github.com/bytedeco/javacpp");
+                "JavaCPP version " + version + "\n" +
+                        "Copyright (C) 2011-2016 Samuel Audet <samuel.audet@gmail.com>\n" +
+                        "Project site: https://github.com/bytedeco/javacpp");
         System.out.println();
         System.out.println("Usage: java -jar javacpp.jar [options] [class or package (suffixed with .* or .**)]");
         System.out.println();
@@ -795,7 +893,7 @@ public class Builder {
             }
         }
         if (!addedClasses) {
-            builder.classesOrPackages((String[])null);
+            builder.classesOrPackages((String[]) null);
         }
         builder.build();
     }

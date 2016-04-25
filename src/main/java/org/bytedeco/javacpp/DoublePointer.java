@@ -37,10 +37,11 @@ public class DoublePointer extends Pointer {
      * @param array the array to copy
      * @see #put(double[])
      */
-    public DoublePointer(double ... array) {
+    public DoublePointer(double... array) {
         this(array.length);
         put(array);
     }
+
     /**
      * For direct buffers, calls {@link Pointer#Pointer(Buffer)}, while for buffers
      * backed with an array, allocates enough memory for the array and copies it.
@@ -58,6 +59,7 @@ public class DoublePointer extends Pointer {
             limit(buffer.limit());
         }
     }
+
     /**
      * Allocates a native {@code double} array of the given size.
      *
@@ -70,31 +72,65 @@ public class DoublePointer extends Pointer {
             throw new RuntimeException("No native JavaCPP library in memory. (Has Loader.load() been called?)", e);
         }
     }
-    /** @see Pointer#Pointer() */
-    public DoublePointer() { }
-    /** @see Pointer#Pointer(Pointer) */
-    public DoublePointer(Pointer p) { super(p); }
+
+    /**
+     * @see Pointer#Pointer()
+     */
+    public DoublePointer() {
+    }
+
+    /**
+     * @see Pointer#Pointer(Pointer)
+     */
+    public DoublePointer(Pointer p) {
+        super(p);
+    }
+
     private native void allocateArray(long size);
 
-    /** @see Pointer#position(long) */
-    @Override public DoublePointer position(long position) {
+    /**
+     * @see Pointer#position(long)
+     */
+    @Override
+    public DoublePointer position(long position) {
         return super.position(position);
     }
-    /** @see Pointer#limit(long) */
-    @Override public DoublePointer limit(long limit) {
+
+    /**
+     * @see Pointer#limit(long)
+     */
+    @Override
+    public DoublePointer limit(long limit) {
         return super.limit(limit);
     }
-    /** @see Pointer#capacity(long) */
-    @Override public DoublePointer capacity(long capacity) {
+
+    /**
+     * @see Pointer#capacity(long)
+     */
+    @Override
+    public DoublePointer capacity(long capacity) {
         return super.capacity(capacity);
     }
 
-    /** @return {@code get(0)} */
-    public double get() { return get(0); }
-    /** @return the i-th {@code double} value of a native array */
+    /**
+     * @return {@code get(0)}
+     */
+    public double get() {
+        return get(0);
+    }
+
+    /**
+     * @return the i-th {@code double} value of a native array
+     */
     public native double get(long i);
-    /** @return {@code put(0, d)} */
-    public DoublePointer put(double d) { return put(0, d); }
+
+    /**
+     * @return {@code put(0, d)}
+     */
+    public DoublePointer put(double d) {
+        return put(0, d);
+    }
+
     /**
      * Copies the {@code double} value to the i-th element of a native array.
      *
@@ -104,31 +140,45 @@ public class DoublePointer extends Pointer {
      */
     public native DoublePointer put(long i, double d);
 
-    /** @return {@code get(array, 0, array.length)} */
-    public DoublePointer get(double[] array) { return get(array, 0, array.length); }
-    /** @return {@code put(array, 0, array.length)} */
-    public DoublePointer put(double ... array) { return put(array, 0, array.length); }
+    /**
+     * @return {@code get(array, 0, array.length)}
+     */
+    public DoublePointer get(double[] array) {
+        return get(array, 0, array.length);
+    }
+
+    /**
+     * @return {@code put(array, 0, array.length)}
+     */
+    public DoublePointer put(double... array) {
+        return put(array, 0, array.length);
+    }
+
     /**
      * Reads a portion of the native array into a Java array.
      *
-     * @param array the array to write to
+     * @param array  the array to write to
      * @param offset the offset into the array where to start writing
      * @param length the length of data to read and write
      * @return this
      */
     public native DoublePointer get(double[] array, int offset, int length);
+
     /**
      * Writes a portion of a Java array into the native array.
      *
-     * @param array the array to read from
+     * @param array  the array to read from
      * @param offset the offset into the array where to start reading
      * @param length the length of data to read and write
      * @return this
      */
     public native DoublePointer put(double[] array, int offset, int length);
 
-    /** @return {@code asByteBuffer().asDoubleBuffer()} */
-    @Override public final DoubleBuffer asBuffer() {
+    /**
+     * @return {@code asByteBuffer().asDoubleBuffer()}
+     */
+    @Override
+    public final DoubleBuffer asBuffer() {
         return asByteBuffer().asDoubleBuffer();
     }
 }

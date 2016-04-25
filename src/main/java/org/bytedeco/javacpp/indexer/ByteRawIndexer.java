@@ -31,19 +31,29 @@ import org.bytedeco.javacpp.Pointer;
  * @author Samuel Audet
  */
 public class ByteRawIndexer extends ByteIndexer {
-    /** The instance for the raw memory interface. */
+    /**
+     * The instance for the raw memory interface.
+     */
     protected static final Raw RAW = Raw.getInstance();
-    /** The backing pointer. */
+    /**
+     * The backing pointer.
+     */
     protected BytePointer pointer;
-    /** Base address and number of elements accessible. */
+    /**
+     * Base address and number of elements accessible.
+     */
     final long base, size;
 
-    /** Calls {@code ByteRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}. */
+    /**
+     * Calls {@code ByteRawIndexer(pointer, { pointer.limit() - pointer.position() }, { 1 })}.
+     */
     public ByteRawIndexer(BytePointer pointer) {
-        this(pointer, new long[] { pointer.limit() - pointer.position() }, new long[] { 1 });
+        this(pointer, new long[]{pointer.limit() - pointer.position()}, new long[]{1});
     }
 
-    /** Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}. */
+    /**
+     * Constructor to set the {@link #pointer}, {@link #sizes} and {@link #strides}.
+     */
     public ByteRawIndexer(BytePointer pointer, long[] sizes, long[] strides) {
         super(sizes, strides);
         this.pointer = pointer;
@@ -51,75 +61,105 @@ public class ByteRawIndexer extends ByteIndexer {
         size = pointer.limit() - pointer.position();
     }
 
-    @Override public Pointer pointer() {
+    @Override
+    public Pointer pointer() {
         return pointer;
     }
 
-    @Override public byte get(long i) {
+    @Override
+    public byte get(long i) {
         return RAW.getByte(base + checkIndex(i, size));
     }
-    @Override public ByteIndexer get(long i, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer get(long i, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             b[offset + n] = get(i * strides[0] + n);
         }
         return this;
     }
-    @Override public byte get(long i, long j) {
-        return get(i * strides[0] + (int)j);
+
+    @Override
+    public byte get(long i, long j) {
+        return get(i * strides[0] + (int) j);
     }
-    @Override public ByteIndexer get(long i, long j, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer get(long i, long j, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             b[offset + n] = get(i * strides[0] + j * strides[1] + n);
         }
         return this;
     }
-    @Override public byte get(long i, long j, long k) {
+
+    @Override
+    public byte get(long i, long j, long k) {
         return get(i * strides[0] + j * strides[1] + k);
     }
-    @Override public byte get(long... indices) {
+
+    @Override
+    public byte get(long... indices) {
         return get(index(indices));
     }
-    @Override public ByteIndexer get(long[] indices, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer get(long[] indices, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             b[offset + n] = get(index(indices) + n);
         }
         return this;
     }
 
-    @Override public ByteIndexer put(long i, byte b) {
+    @Override
+    public ByteIndexer put(long i, byte b) {
         RAW.putByte(base + checkIndex(i, size), b);
         return this;
     }
-    @Override public ByteIndexer put(long i, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer put(long i, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(i * strides[0] + n, b[offset + n]);
         }
         return this;
     }
-    @Override public ByteIndexer put(long i, long j, byte b) {
+
+    @Override
+    public ByteIndexer put(long i, long j, byte b) {
         put(i * strides[0] + j, b);
         return this;
     }
-    @Override public ByteIndexer put(long i, long j, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer put(long i, long j, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(i * strides[0] + j * strides[1] + n, b[offset + n]);
         }
         return this;
     }
-    @Override public ByteIndexer put(long i, long j, long k, byte b) {
+
+    @Override
+    public ByteIndexer put(long i, long j, long k, byte b) {
         put(i * strides[0] + j * strides[1] + k, b);
         return this;
     }
-    @Override public ByteIndexer put(long[] indices, byte b) {
+
+    @Override
+    public ByteIndexer put(long[] indices, byte b) {
         put(index(indices), b);
         return this;
     }
-    @Override public ByteIndexer put(long[] indices, byte[] b, int offset, int length) {
+
+    @Override
+    public ByteIndexer put(long[] indices, byte[] b, int offset, int length) {
         for (int n = 0; n < length; n++) {
             put(index(indices) + n, b[offset + n]);
         }
         return this;
     }
 
-    @Override public void release() { pointer = null; }
+    @Override
+    public void release() {
+        pointer = null;
+    }
 }

@@ -27,16 +27,63 @@ package org.bytedeco.javacpp.indexer;
  * @author Samuel Audet
  */
 class ReverseUnsafeRaw extends UnsafeRaw {
-    @Override short getShort(long address) { return Short.reverseBytes(super.getShort(address)); }
-    @Override void putShort(long address, short s) { super.putShort(address, Short.reverseBytes(s)); }
-    @Override int getInt(long address) { return Integer.reverseBytes(super.getInt(address)); }
-    @Override void putInt(long address, int i) { super.putInt(address, Integer.reverseBytes(i)); }
-    @Override long getLong(long address) { return Long.reverseBytes(super.getLong(address)); }
-    @Override void putLong(long address, long l) { super.putLong(address, Long.reverseBytes(l)); }
-    @Override float getFloat(long address) { return Float.intBitsToFloat(Integer.reverseBytes(super.getInt(address))); }
-    @Override void putFloat(long address, float f) { super.putFloat(address, Integer.reverseBytes(Float.floatToRawIntBits(f))); }
-    @Override double getDouble(long address) { return Double.longBitsToDouble(Long.reverseBytes(super.getLong(address))); }
-    @Override void putDouble(long address, double d) { super.putDouble(address, Long.reverseBytes(Double.doubleToRawLongBits(d))); }
-    @Override char getChar(long address) { return Character.reverseBytes(super.getChar(address)); }
-    @Override void putChar(long address, char c) { super.putChar(address, Character.reverseBytes(c)); }
+    @Override
+    short getShort(long address) {
+        return Short.reverseBytes(super.getShort(address));
+    }
+
+    @Override
+    void putShort(long address, short s) {
+        super.putShort(address, Short.reverseBytes(s));
+    }
+
+    @Override
+    int getInt(long address) {
+        return Integer.reverseBytes(super.getInt(address));
+    }
+
+    @Override
+    void putInt(long address, int i) {
+        super.putInt(address, Integer.reverseBytes(i));
+    }
+
+    @Override
+    long getLong(long address) {
+        return Long.reverseBytes(super.getLong(address));
+    }
+
+    @Override
+    void putLong(long address, long l) {
+        super.putLong(address, Long.reverseBytes(l));
+    }
+
+    @Override
+    float getFloat(long address) {
+        return Float.intBitsToFloat(Integer.reverseBytes(super.getInt(address)));
+    }
+
+    @Override
+    void putFloat(long address, float f) {
+        super.putFloat(address, Integer.reverseBytes(Float.floatToRawIntBits(f)));
+    }
+
+    @Override
+    double getDouble(long address) {
+        return Double.longBitsToDouble(Long.reverseBytes(super.getLong(address)));
+    }
+
+    @Override
+    void putDouble(long address, double d) {
+        super.putDouble(address, Long.reverseBytes(Double.doubleToRawLongBits(d)));
+    }
+
+    @Override
+    char getChar(long address) {
+        return Character.reverseBytes(super.getChar(address));
+    }
+
+    @Override
+    void putChar(long address, char c) {
+        super.putChar(address, Character.reverseBytes(c));
+    }
 }

@@ -26,7 +26,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- *
  * @author Samuel Audet
  */
 public class MethodInformation {

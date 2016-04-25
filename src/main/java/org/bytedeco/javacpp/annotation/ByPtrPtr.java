@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.tools.Generator;
 
@@ -13,10 +14,11 @@ import org.bytedeco.javacpp.tools.Generator;
  * This is usually used as a shortcut for the more versatile {@link PointerPointer}
  * peer class, but where the latter is not needed because the argument is not an array.
  *
- * @see Generator
- *
  * @author Samuel Audet
+ * @see Generator
  */
-@Documented @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface ByPtrPtr { }
+public @interface ByPtrPtr {
+}
