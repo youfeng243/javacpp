@@ -1,14 +1,10 @@
 package org.bytedeco.javacpp.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.nio.Buffer;
-
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.tools.Generator;
+
+import java.lang.annotation.*;
+import java.nio.Buffer;
 
 /**
  * Specifies a C++ class to act as an adapter to convert the types of arguments.

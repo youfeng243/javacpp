@@ -22,11 +22,7 @@
 
 package org.bytedeco.javacpp.tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A {@link Map} containing {@link Info} objects consumed by the {@link Parser}.

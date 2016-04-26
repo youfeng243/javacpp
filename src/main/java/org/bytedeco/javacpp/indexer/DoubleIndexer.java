@@ -22,9 +22,9 @@
 
 package org.bytedeco.javacpp.indexer;
 
-import java.nio.DoubleBuffer;
-
 import org.bytedeco.javacpp.DoublePointer;
+
+import java.nio.DoubleBuffer;
 
 /**
  * Abstract indexer for the {@code double} primitive type.

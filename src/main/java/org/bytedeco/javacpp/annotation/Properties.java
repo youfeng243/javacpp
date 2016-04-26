@@ -1,15 +1,11 @@
 package org.bytedeco.javacpp.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.tools.Builder;
 import org.bytedeco.javacpp.tools.Generator;
 import org.bytedeco.javacpp.tools.Parser;
+
+import java.lang.annotation.*;
 
 /**
  * Makes it possible to define more than one set of properties for each platform.

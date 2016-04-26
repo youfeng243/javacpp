@@ -21,24 +21,17 @@
  */
 package org.bytedeco.javacpp;
 
-import java.io.File;
-
 import org.bytedeco.javacpp.annotation.Platform;
-import org.bytedeco.javacpp.indexer.ByteIndexer;
-import org.bytedeco.javacpp.indexer.CharIndexer;
-import org.bytedeco.javacpp.indexer.DoubleIndexer;
-import org.bytedeco.javacpp.indexer.FloatIndexer;
-import org.bytedeco.javacpp.indexer.IntIndexer;
-import org.bytedeco.javacpp.indexer.LongIndexer;
-import org.bytedeco.javacpp.indexer.ShortIndexer;
-import org.bytedeco.javacpp.indexer.UByteIndexer;
-import org.bytedeco.javacpp.indexer.UShortIndexer;
+import org.bytedeco.javacpp.indexer.*;
 import org.bytedeco.javacpp.tools.Builder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test cases for the indexer package. Also uses other classes from JavaCPP.

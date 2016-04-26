@@ -22,9 +22,9 @@
 
 package org.bytedeco.javacpp.indexer;
 
-import java.nio.CharBuffer;
-
 import org.bytedeco.javacpp.CharPointer;
+
+import java.nio.CharBuffer;
 
 /**
  * Abstract indexer for the {@code char} primitive type.

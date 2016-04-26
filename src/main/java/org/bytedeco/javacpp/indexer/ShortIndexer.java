@@ -22,9 +22,9 @@
 
 package org.bytedeco.javacpp.indexer;
 
-import java.nio.ShortBuffer;
-
 import org.bytedeco.javacpp.ShortPointer;
+
+import java.nio.ShortBuffer;
 
 /**
  * Abstract indexer for the {@code short} primitive type.

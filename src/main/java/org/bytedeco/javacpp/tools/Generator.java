@@ -22,6 +22,9 @@
 
 package org.bytedeco.javacpp.tools;
 
+import org.bytedeco.javacpp.*;
+import org.bytedeco.javacpp.annotation.*;
+
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -29,66 +32,8 @@ import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bytedeco.javacpp.BoolPointer;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.CLongPointer;
-import org.bytedeco.javacpp.CharPointer;
-import org.bytedeco.javacpp.ClassProperties;
-import org.bytedeco.javacpp.DoublePointer;
-import org.bytedeco.javacpp.FloatPointer;
-import org.bytedeco.javacpp.FunctionPointer;
-import org.bytedeco.javacpp.IntPointer;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.LongPointer;
-import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.javacpp.PointerPointer;
-import org.bytedeco.javacpp.ShortPointer;
-import org.bytedeco.javacpp.SizeTPointer;
-import org.bytedeco.javacpp.annotation.Adapter;
-import org.bytedeco.javacpp.annotation.Allocator;
-import org.bytedeco.javacpp.annotation.ArrayAllocator;
-import org.bytedeco.javacpp.annotation.ByPtr;
-import org.bytedeco.javacpp.annotation.ByPtrPtr;
-import org.bytedeco.javacpp.annotation.ByPtrRef;
-import org.bytedeco.javacpp.annotation.ByRef;
-import org.bytedeco.javacpp.annotation.ByVal;
-import org.bytedeco.javacpp.annotation.Cast;
-import org.bytedeco.javacpp.annotation.Const;
-import org.bytedeco.javacpp.annotation.Convention;
-import org.bytedeco.javacpp.annotation.Function;
-import org.bytedeco.javacpp.annotation.Index;
-import org.bytedeco.javacpp.annotation.MemberGetter;
-import org.bytedeco.javacpp.annotation.MemberSetter;
-import org.bytedeco.javacpp.annotation.Name;
-import org.bytedeco.javacpp.annotation.Namespace;
-import org.bytedeco.javacpp.annotation.NoDeallocator;
-import org.bytedeco.javacpp.annotation.NoException;
-import org.bytedeco.javacpp.annotation.NoOffset;
-import org.bytedeco.javacpp.annotation.Opaque;
-import org.bytedeco.javacpp.annotation.Platform;
-import org.bytedeco.javacpp.annotation.Raw;
-import org.bytedeco.javacpp.annotation.ValueGetter;
-import org.bytedeco.javacpp.annotation.ValueSetter;
-import org.bytedeco.javacpp.annotation.Virtual;
+import java.nio.*;
+import java.util.*;
 
 /**
  * The Generator is where all the C++ source code that we need gets generated.

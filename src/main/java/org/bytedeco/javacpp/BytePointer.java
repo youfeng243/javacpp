@@ -22,10 +22,10 @@
 
 package org.bytedeco.javacpp;
 
+import org.bytedeco.javacpp.annotation.Cast;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-
-import org.bytedeco.javacpp.annotation.Cast;
 
 /**
  * The peer class to native pointers and arrays of {@code signed char}, including strings.

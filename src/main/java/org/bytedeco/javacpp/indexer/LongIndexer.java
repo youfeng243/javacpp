@@ -22,9 +22,9 @@
 
 package org.bytedeco.javacpp.indexer;
 
-import java.nio.LongBuffer;
-
 import org.bytedeco.javacpp.LongPointer;
+
+import java.nio.LongBuffer;
 
 /**
  * Abstract indexer for the {@code long} primitive type.

@@ -22,9 +22,9 @@
 
 package org.bytedeco.javacpp.indexer;
 
-import java.nio.FloatBuffer;
-
 import org.bytedeco.javacpp.FloatPointer;
+
+import java.nio.FloatBuffer;
 
 /**
  * Abstract indexer for the {@code float} primitive type.

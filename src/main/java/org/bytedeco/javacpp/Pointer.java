@@ -22,6 +22,9 @@
 
 package org.bytedeco.javacpp;
 
+import org.bytedeco.javacpp.tools.Generator;
+import org.bytedeco.javacpp.tools.Logger;
+
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.reflect.Constructor;
@@ -30,9 +33,6 @@ import java.lang.reflect.Modifier;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
-import org.bytedeco.javacpp.tools.Generator;
-import org.bytedeco.javacpp.tools.Logger;
 
 /**
  * All peer classes to native types must be descended from Pointer, the topmost class.

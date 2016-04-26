@@ -21,19 +21,13 @@
  */
 package org.bytedeco.javacpp;
 
-import java.io.File;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
-
 import org.bytedeco.javacpp.annotation.Platform;
 import org.bytedeco.javacpp.tools.Builder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.*;
 
 import static org.junit.Assert.*;
 

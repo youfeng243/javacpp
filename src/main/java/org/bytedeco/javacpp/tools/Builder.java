@@ -22,28 +22,16 @@
 
 package org.bytedeco.javacpp.tools;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.bytedeco.javacpp.ClassProperties;
+import org.bytedeco.javacpp.Loader;
+
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
-
-import org.bytedeco.javacpp.ClassProperties;
-import org.bytedeco.javacpp.Loader;
 
 /**
  * The Builder is responsible for coordinating efforts between the Parser, the

@@ -22,20 +22,11 @@
 
 package org.bytedeco.javacpp.tools;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.bytedeco.javacpp.ClassProperties;
 import org.bytedeco.javacpp.Loader;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * The Parser, just like the Generator, is a mess that is not meant to support the

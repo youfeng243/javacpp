@@ -1,13 +1,9 @@
 package org.bytedeco.javacpp.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.tools.Generator;
+
+import java.lang.annotation.*;
 
 /**
  * Indicates that an argument should get passed or returned by pointer. By default,

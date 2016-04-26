@@ -22,16 +22,10 @@
 
 package org.bytedeco.javacpp;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.bytedeco.javacpp.annotation.Platform;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Does the heavy lifting of collecting values off Properties annotations found
